@@ -1,12 +1,23 @@
-本实验为新建工程实验，仅供大家新建工程时参考。
-新建工程详细步骤，请看《STM32F4开发指南-库函数版本》第3.3节。
+W	going straight forward
+Q	going left
+E	goint right
+S	going backward
+A	turning left
+D	turning right
+Shift	calibrate(turning the chasis so that the chasis and gimal pointing to the same direction, gimbol stays stationary)
 
+For Gimbal
+MOUSE CONTROL
+x
+y
+z
+press_left
+press_right
 
-               	正点原子@ALIENTEK
-               	2014-10-24
-		广州市星翼电子科技有限公司
-                电话：020-38271790
-                传真：020-36773971
-	       	购买：http://shop62057469.taobao.com
-                公司网站：www.alientek.com
-         	技术论坛：www.openedv.com
+2-15 arrival of the infantries
+finish tuning PID for the gimbal
+Mouse key control of chasis ( chasis PID rearrangement )
+*decrease buffer size
+*set boundary for integral part
+*increase the absolute value of the limit for filter rate
+*writing code for tuning wheel PID ( better using DataMonitor ) 
