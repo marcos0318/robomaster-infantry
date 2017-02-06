@@ -178,7 +178,7 @@ int main(void)
 
 //power control 
       //imitate the process in judging system
-			if (ticks_msimg%50==20){
+			if (ticks_msimg%20==0){
 					//getPr
 		      feedback_current = InfantryJudge.RealCurrent; 
 				  feedback_voltage = InfantryJudge.RealVoltage;
