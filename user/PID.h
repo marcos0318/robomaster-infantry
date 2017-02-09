@@ -30,20 +30,20 @@ struct pid_control_states {
 
 
 int16_t pid_process(
-			struct pid_control_states* states, 
-			int32_t* setpoint,
-			int32_t* feedback,
-			int32_t kp, 
-			int32_t ki, 
-			int32_t kd);
+	struct pid_control_states* states, 
+	int32_t* setpoint,
+	int32_t* feedback,
+	int32_t kp, 
+	int32_t ki, 
+	int32_t kd);
 
 
 int16_t pid_process_gai1(
-		  struct pid_control_states* states, 
-			int32_t* setpoint,
-			int32_t* feedback,
-			int32_t kp, 
-			int32_t ki, 
-			int32_t kd);
+  struct pid_control_states* states, 
+	int32_t* setpoint,
+	int32_t* feedback,
+	int32_t kp, 
+	int32_t ki, 
+	int32_t kd);
 
 #endif
