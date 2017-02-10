@@ -2,7 +2,6 @@
 "..\obj\stm32f4xx_it.o"
 "..\obj\main.o"
 "..\obj\system_stm32f4xx.o"
-"..\obj\pid.o"
 "..\obj\startup_stm32f40_41xxx.o"
 "..\obj\misc.o"
 "..\obj\stm32f4xx_adc.o"
@@ -36,6 +35,8 @@
 "..\obj\canbusprocess.o"
 "..\obj\dbus.o"
 "..\obj\judge.o"
+"..\obj\pid.o"
+"..\obj\helper_functions.o"
 --strict --scatter "..\OBJ\Template.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

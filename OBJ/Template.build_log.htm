@@ -22,7 +22,7 @@ Dialog DLL:      TCM.DLL V1.21.0.0
  
 <h2>Project:</h2>
 C:\Users\BaiJiaxin\Desktop\HKUST_RM2017_Mainboard_V1_code\user\Template.uvprojx
-Project File Date:  01/08/2017
+Project File Date:  02/09/2017
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
@@ -54,32 +54,34 @@ judge.h(33): warning:  #1-D: last line of file ends without a newline
   extern InfantryJudge_Struct InfantryJudge;
 PID.h(49): warning:  #1-D: last line of file ends without a newline
   #endif
-function_list.h(26): warning:  #1295-D: Deprecated declaration LED_master_init - give arg types
+helper_functions.h(20): warning:  #1-D: last line of file ends without a newline
+  #endif
+function_list.h(27): warning:  #1295-D: Deprecated declaration LED_master_init - give arg types
   void LED_master_init();
-function_list.h(31): warning:  #1295-D: Deprecated declaration tft_update - give arg types
+function_list.h(32): warning:  #1295-D: Deprecated declaration tft_update - give arg types
   void tft_update();
-function_list.h(32): warning:  #1295-D: Deprecated declaration tft_clear - give arg types
+function_list.h(33): warning:  #1295-D: Deprecated declaration tft_clear - give arg types
   void tft_clear();
-function_list.h(52): warning:  #1295-D: Deprecated declaration pneumatic_init - give arg types
+function_list.h(53): warning:  #1295-D: Deprecated declaration pneumatic_init - give arg types
   void pneumatic_init();
-function_list.h(56): warning:  #1295-D: Deprecated declaration CAN1_Configuration - give arg types
+function_list.h(57): warning:  #1295-D: Deprecated declaration CAN1_Configuration - give arg types
   void CAN1_Configuration();
-function_list.h(57): warning:  #1295-D: Deprecated declaration CAN2_Configuration - give arg types
+function_list.h(58): warning:  #1295-D: Deprecated declaration CAN2_Configuration - give arg types
   void CAN2_Configuration();
-main.c(187): warning:  #1035-D: single-precision operand implicitly converted to double-precision
-  				  W = W - (Pr -PL) * 0.02;
-main.c: 20 warnings, 0 errors
+main.c(106): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  					W = W - (Pr -PL) * 0.02;
+main.c: 21 warnings, 0 errors
 linking...
-Program Size: Code=36236 RO-data=2644 RW-data=12544 ZI-data=16312  
+Program Size: Code=36220 RO-data=2644 RW-data=12544 ZI-data=9912  
 FromELF: creating hex file...
-"..\OBJ\Template.axf" - 0 Error(s), 20 Warning(s).
+"..\OBJ\Template.axf" - 0 Error(s), 21 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
   C:\Users\BaiJiaxin\Desktop\HKUST_RM2017_Mainboard_V1_code\user\RTE\_HKUST_RM2017_Mainboard
   C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:02
+Build Time Elapsed:  00:00:07
 </pre>
 </body>
 </html>
