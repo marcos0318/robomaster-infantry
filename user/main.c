@@ -73,7 +73,24 @@ int32_t ki_power = 3;
 int32_t kd_power = 0;
 
 
-
+//Gimbal yaw control (Position loop and velocity loop) 
+int32_t x_pos = 0;
+int32_t y_pos = 0;
+int32_t z_pos = 0;
+struct pid_control_states yaw_speed = {0,0,0};
+int32_t yaw_speed_output = 0;
+int32_t yaw_speed_feedback = 0;
+int32_t yaw_speed_max = 500;
+int32_t kp_yaw_speed = 80;
+int32_t ki_yaw_speed = 4;
+int32_t kd_yaw_speed = 0;
+struct pid_control_states yaw_position = {0,0,0};
+int32_t yaw_position_feedback = 0;
+int32_t yaw_position_output = 0;
+int32_t yaw_position_max = 4000;
+int32_t kp_yaw_position = 1;
+int32_t ki_yaw_position = 0;
+int32_t kd_yaw_position = 0;
 
 int main(void)
 {	
@@ -94,7 +111,7 @@ int main(void)
 		{
 			ticks_msimg = get_ms_ticks();  //maximum 1000000	
 			
-			if (DBUS_ReceiveData.rc.switch_right == 3){
+			if (DBUS_ReceiveData.rc.switch_right == 1){
 			
 				if (ticks_msimg%20==0){
 					//power control 
@@ -203,12 +220,33 @@ int main(void)
 				}
 						 
 				Set_CM_Speed(CAN2, wheel_outputs[0], wheel_outputs[1], wheel_outputs[2], wheel_outputs[3]);
-		
+				Set_CM_Speed(CAN1, 0, 0, 0, 0);
 			
-			}	else {
+			}	else if (DBUS_ReceiveData.rc.switch_right == 3) {
+				//Here put the code of Gimbal control
+				//Process the position data from receiver:
+				x_pos += DBUS_ReceiveData.mouse.x;
+				y_pos -= DBUS_ReceiveData.mouse.y;
+				z_pos += DBUS_ReceiveData.mouse.z;			
+				//limit the yaw angle
+				if (abs(x_pos) > yaw_position_max )x_pos = (x_pos > 0 )? (yaw_position_max ): (-yaw_position_max);
+				yaw_position_feedback = (int32_t)CM1Encoder.ecd_angle;
+				yaw_position_output = pid_process(&yaw_position, &x_pos, &yaw_position_feedback, kp_yaw_position, ki_yaw_position,kd_yaw_position );
+				//Mimic speed input
+				//yaw_position_output = DBUS_ReceiveData.rc.ch2/20;
+				if (abs(yaw_position_output)>yaw_speed_max ) yaw_position_output = (yaw_position_output > 0)? (yaw_speed_max) : (-yaw_speed_max);
+				yaw_speed_feedback = CM1Encoder.filter_rate;
+				if ( ticks_msimg%20==0) {
+					yaw_speed_output = pid_process(&yaw_speed, &yaw_position_output, &yaw_speed_feedback ,kp_yaw_speed, ki_yaw_speed, kd_yaw_speed);
+				}
+
+				Set_CM_Speed(CAN2, yaw_speed_output, 0, 0, 0);
+
+			} else {
+				Set_CM_Speed(CAN1, 0, 0, 0, 0);
 				Set_CM_Speed(CAN2, 0, 0, 0, 0);
 			}		
-	
+			
 				
 			
 			
@@ -216,9 +254,17 @@ int main(void)
 			if(ticks_msimg%50==0)
 			{
 				tft_clear();
-				tft_prints (1,2, "W: %.2f", W);
-		    tft_prints (1,3, "Pr: %.2f", Pr);
-				tft_prints (1,4, "Cof: %d", wheel_setpoint_coefficient);
+				if (DBUS_ReceiveData.rc.switch_right == 1) {
+					tft_prints (1,2, "W: %.2f", W);
+			    tft_prints (1,3, "Pr: %.2f", Pr);
+					tft_prints (1,4, "Cof: %d", wheel_setpoint_coefficient);
+				}
+				if (DBUS_ReceiveData.rc.switch_right == 3) {
+					tft_prints (1,2, "Angle: %.3f", CM1Encoder.ecd_angle);
+					tft_prints (1,3, "");
+					tft_prints (1,4, "x: %d",x_pos);
+					tft_prints (1,5, "y: %d",y_pos);
+				}
 				
 				tft_update();
 				LED_blink(LED1);

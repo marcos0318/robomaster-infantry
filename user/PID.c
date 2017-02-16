@@ -29,3 +29,51 @@ int16_t pid_process_gai1( struct pid_control_states* states, int32_t* setpoint, 
 
 	return output;
 }
+
+void incPIDinit(struct inc_pid_states * state_ptr ) {
+	state_ptr->sum_error = 0;
+	state_ptr->last_error = 0;
+	state_ptr->prev_error = 0;
+	state_ptr->kp = 0;
+	state_ptr->ki = 0;
+	state_ptr->kd = 0;
+	state_ptr->setpoint = 0;
+}
+
+
+void PID_set(struct inc_pid_states * states_ptr) {
+	states_ptr -> kp = 0;
+	states_ptr -> ki = 0;
+	states_ptr -> kd = 0;
+}
+
+
+float incPIDcalc (struct inc_pid_states * state_ptr, signed int nextpoint) {
+	int iError;
+	float iincpid;
+	iError = state_ptr->setpoint - nextpoint;
+	//calculate the result 
+	iincpid = 
+	state_ptr->kp * (iError - state_ptr->last_error) +
+	state_ptr->ki * iError +
+	state_ptr->kd * (iError-2*state_ptr->last_error+state_ptr->prev_error);
+	//save the data for the next calculation
+	state_ptr->prev_error = state_ptr->last_error;
+	state_ptr->last_error = iError;
+	return iincpid;
+}
+
+void PID_setpoint (struct inc_pid_states * state_ptr, signed int setvalue) {
+		state_ptr->setpoint = setvalue;
+}
+
+
+
+
+
+
+
+
+
+
+

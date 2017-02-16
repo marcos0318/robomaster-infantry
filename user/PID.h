@@ -17,6 +17,7 @@ of pid process
 3, use the pid_process in the main loop, it will get the 
 output of pid and adjust the data in pid_control_states from
 error
+4, the function below are for the increment pid control, almost the same
 */
 
 
@@ -45,5 +46,25 @@ int16_t pid_process_gai1(
 	int32_t kp, 
 	int32_t ki, 
 	int32_t kd);
+
+struct inc_pid_states {
+	signed int setpoint;
+	float kp;
+	float ki;
+	float kd;
+	int sum_error;
+	//e[-1]
+	int last_error;
+	//e[-2]
+	int prev_error;
+};
+
+void incPIDinit(struct inc_pid_states * state_ptr );
+
+void PID_set(struct inc_pid_states * states_ptr);
+
+float incPIDcalc (struct inc_pid_states * state_ptr, signed int nextpoint);
+
+void PID_setpoint (struct inc_pid_states * state_ptr, signed int setvalue);
 
 #endif
