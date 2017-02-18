@@ -41,10 +41,10 @@ void incPIDinit(struct inc_pid_states * state_ptr ) {
 }
 
 
-void PID_set(struct inc_pid_states * states_ptr) {
-	states_ptr -> kp = 0;
-	states_ptr -> ki = 0;
-	states_ptr -> kd = 0;
+void incPIDset(struct inc_pid_states * states_ptr, float kp, float ki, float kd) {
+	states_ptr -> kp = kp;
+	states_ptr -> ki = ki;
+	states_ptr -> kd = kd;
 }
 
 
@@ -63,11 +63,16 @@ float incPIDcalc (struct inc_pid_states * state_ptr, signed int nextpoint) {
 	return iincpid;
 }
 
-void PID_setpoint (struct inc_pid_states * state_ptr, signed int setvalue) {
+void incPIDsetpoint (struct inc_pid_states * state_ptr, signed int setvalue) {
 		state_ptr->setpoint = setvalue;
 }
 
 
+void incPIDClearError(struct inc_pid_states * state_ptr) {
+	state_ptr->sum_error = 0;
+	state_ptr->last_error = 0;
+	state_ptr->prev_error = 0;
+}
 
 
 

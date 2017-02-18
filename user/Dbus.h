@@ -45,6 +45,9 @@ typedef struct {
 		int16_t x;
 		int16_t y;
 		int16_t z;
+		int32_t xtotal;
+		int32_t ytotal;
+		int32_t ztotal;
 	
 		uint8_t press_left;
 		uint8_t press_right;

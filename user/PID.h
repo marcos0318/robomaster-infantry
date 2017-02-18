@@ -61,10 +61,12 @@ struct inc_pid_states {
 
 void incPIDinit(struct inc_pid_states * state_ptr );
 
-void PID_set(struct inc_pid_states * states_ptr);
+void incPIDset(struct inc_pid_states * states_ptr, float kp, float ki, float kd);
 
 float incPIDcalc (struct inc_pid_states * state_ptr, signed int nextpoint);
 
-void PID_setpoint (struct inc_pid_states * state_ptr, signed int setvalue);
+void incPIDsetpoint (struct inc_pid_states * state_ptr, signed int setvalue);
+
+void incPIDClearError(struct inc_pid_states * state_ptr);
 
 #endif
