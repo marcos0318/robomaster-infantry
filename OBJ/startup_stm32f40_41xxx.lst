@@ -869,12 +869,12 @@ ARM Macro Assembler    Page 14
               00000000 
 Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M4.fp --apcs=int
 erwork --depend=..\obj\startup_stm32f40_41xxx.d -o..\obj\startup_stm32f40_41xxx
-.o -IC:\Users\BaiJiaxin\Desktop\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUS
-T_RM2017_Mainboard -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSI
-S\Device\ST\STM32F4xx\Include -IC:\Keil_v5\ARM\CMSIS\Include -IC:\Keil_v5\ARM\P
-ACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include --predefine="__UVISION_VERSION SET
-A 522" --predefine="STM32F407xx SETA 1" --list=..\obj\startup_stm32f40_41xxx.ls
-t ..\CORE\startup_stm32f40_41xxx.s
+.o -IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM
+2017_Mainboard -IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\De
+vice\ST\STM32F4xx\Include -IC:\Keil_v5\ARM\CMSIS\Include -IC:\Keil_v5\ARM\PACK\
+Keil\STM32F4xx_DFP\2.10.0\Device\Include --predefine="__UVISION_VERSION SETA 52
+2" --predefine="STM32F407xx SETA 1" --list=..\obj\startup_stm32f40_41xxx.lst ..
+\CORE\startup_stm32f40_41xxx.s
 
 
 

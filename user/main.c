@@ -252,13 +252,13 @@ int main(void)
 				  if (abs(GMYawEncoder.ecd_angle- gimbalPositionSetpoint)<30 && abs( GMYawEncoder.ecd_angle - prevGimbalPositionSetpoint)< 40) {
 				  	//why use while
 				  	while((gimbalPositionSetpoint==prevGimbalPositionSetpoint)) {
-				  		gimbalPositionSetpoint = DBUS_ReceiveData.mouse.xtotal*0.8
+				  		gimbalPositionSetpoint = DBUS_ReceiveData.mouse.xtotal*0.8;
 				  		if(abs(GMYawEncoder.ecd_angle-gimbalPositionSetpoint)>85) break;
 				  		//why use this???????????
 				  		if (ticks_msimg != get_ms_ticks()) {
 				  			ticks_msimg = get_ms_ticks();
 				  			gimbalSpeedStaticOutput+=incPIDcalc(&gimbalSpeedStaticState, GMYawEncoder.filter_rate);
-				  			Set_CM_Speed(CAN1, gimbalSpeedStaticOutput);
+				  			Set_CM_Speed(CAN1, gimbalSpeedStaticOutput,0,0,0);
 				  			//no print
 				  		}
 				  		prevGimbalPositionSetpoint = gimbalPositionSetpoint;
@@ -271,7 +271,7 @@ int main(void)
 
 				  else {
 				  	gimbalSpeedMoveOutput+=incPIDcalc(&gimbalSpeedMoveState, GMYawEncoder.filter_rate);
-				  	Set_CM_Speed(CAN1, gimbalSpeedMoveOutput,0,0);
+				  	Set_CM_Speed(CAN1, gimbalSpeedMoveOutput,0,0,0);
 				  	incPIDClearError(&gimbalSpeedStaticState);
 				  	gimbalSpeedStaticOutput = 0;
 				  }
@@ -300,8 +300,6 @@ int main(void)
 				if (DBUS_ReceiveData.rc.switch_right == 3) {
 					tft_prints (1,2, "Angle: %.3f", CM1Encoder.ecd_angle);
 					tft_prints (1,3, "");
-					tft_prints (1,4, "x: %d",x_pos);
-					tft_prints (1,5, "y: %d",y_pos);
 				}
 				
 				tft_update();
