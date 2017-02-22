@@ -77,13 +77,13 @@ int32_t kd_power = 0;
 
 //Gimbal yaw control (Position loop and velocity loop) 
 float prevGMYawEncoderEcdAngle=0;
-struct inc_pid_states gimbalPositionState, gimbalSpeedMoveState, gimbalSpeedStaticState;
-int32_t gimbalPositionSetpoint = 0, prevGimbalPositionSetpoint = 0;
+struct inc_pid_states gimbalPositionState, gimbalSpeedMoveState;// gimbalSpeedStaticState;
+int32_t gimbalPositionSetpoint = 0;// prevGimbalPositionSetpoint = 0;
 int32_t bufferedGimbalPositionSetpoint = 0;
 bool isGimbalPositionSetpointIncrease = true;
 
 int32_t gimbalSpeedSetpoint = 0;
-int32_t gimbalSpeedMoveOutput = 0, gimbalSpeedStaticOutput = 0;
+int32_t gimbalSpeedMoveOutput = 0;// gimbalSpeedStaticOutput = 0;
 
 
 
@@ -102,12 +102,12 @@ int main(void)
 	
 	incPIDinit(&gimbalPositionState);
 	incPIDinit(&gimbalSpeedMoveState);
-	incPIDinit(&gimbalSpeedStaticState);
+	//incPIDinit(&gimbalSpeedStaticState);
 
-	incPIDset(&gimbalPositionState, 0.51, 0.009, 0.4);
-	incPIDset(&gimbalSpeedMoveState, 9, 0.57, 9);
-	incPIDset(&gimbalSpeedStaticState, 80.0, 7, 100);
-	incPIDsetpoint(&gimbalSpeedStaticState, 0);
+	incPIDset(&gimbalPositionState, 0.6,0.1,0);
+	incPIDset(&gimbalSpeedMoveState, 60,3,40);
+	//incPIDset(&gimbalSpeedStaticState, 80.0, 7, 100);
+	//incPIDsetpoint(&gimbalSpeedStaticState, 0);
 	while (1)  {	
 
 
@@ -232,9 +232,9 @@ int main(void)
 				//there is possibility that we can do better if we use higher sampling rate
 				
 					//get the position Data and resolve it and pass it to the setpoint of the position pid
-					gimbalPositionSetpoint = -DBUS_ReceiveData.mouse.xtotal*0.8;
+					gimbalPositionSetpoint = -DBUS_ReceiveData.mouse.xtotal;
 					
-				  
+				  /*
 					if(gimbalPositionSetpoint == prevGimbalPositionSetpoint) SetpointStatic=true;
 					else SetpointStatic=false;
 					if(!SetpointStatic) GimbalState=MovingState;
@@ -247,50 +247,52 @@ int main(void)
 						else GimbalState=MovingState;
 					}
 				  
+					*/
 					
-					
-				  //Limit the output
-				  if (gimbalSpeedSetpoint > 300) gimbalSpeedSetpoint = 300;
-				  else if (gimbalSpeedSetpoint < -300) gimbalSpeedSetpoint = -300;
+				  
 
-					
+					/*
 					if(GimbalState==StaticState) {
 						incPIDClearError(&gimbalSpeedMoveState);
 						gimbalSpeedStaticOutput+=incPIDcalc(&gimbalSpeedStaticState, GMYawEncoder.filter_rate);
 				  	Set_CM_Speed(CAN1, gimbalSpeedStaticOutput,0,0,0);
 						gimbalSpeedSetpoint=0;
 					}
-					if(GimbalState==MovingState && ticks_msimg%20 == 0) {
+					*/
+					
 						
 						if(bufferedGimbalPositionSetpoint < gimbalPositionSetpoint) isGimbalPositionSetpointIncrease = true;
 						else isGimbalPositionSetpointIncrease = false;
 						if(isGimbalPositionSetpointIncrease){
-							bufferedGimbalPositionSetpoint+=300;
+							bufferedGimbalPositionSetpoint+=50;
 							if (bufferedGimbalPositionSetpoint > gimbalPositionSetpoint)
 							bufferedGimbalPositionSetpoint = gimbalPositionSetpoint;
 						}
 						else {
-							bufferedGimbalPositionSetpoint-=300;
+							bufferedGimbalPositionSetpoint-=50;
 							if(bufferedGimbalPositionSetpoint < gimbalPositionSetpoint) 
 								bufferedGimbalPositionSetpoint = gimbalPositionSetpoint;
 						}
 
 						incPIDsetpoint(&gimbalPositionState, bufferedGimbalPositionSetpoint);
 						gimbalSpeedSetpoint+=incPIDcalc(&gimbalPositionState, (int32_t)(GMYawEncoder.ecd_angle));
-						incPIDClearError(&gimbalSpeedStaticState);
+						//Limit the output
+						if (gimbalSpeedSetpoint > 1000) gimbalSpeedSetpoint = 1000;
+						else if (gimbalSpeedSetpoint < -1000) gimbalSpeedSetpoint = -1000;
+						//incPIDClearError(&gimbalSpeedStaticState);
 						incPIDsetpoint(&gimbalSpeedMoveState, gimbalSpeedSetpoint);
 						gimbalSpeedMoveOutput+=incPIDcalc(&gimbalSpeedMoveState, GMYawEncoder.filter_rate);
 				  	Set_CM_Speed(CAN1, gimbalSpeedMoveOutput,0,0,0);
 						
-					}
+					
 				  if(ticks_msimg%20==0){	
 					for (int j=2;j<12;j++) tft_clear_line(j);
 					tft_prints(1,2,"setpoint=%d",gimbalPositionSetpoint);
 					tft_prints(1,3,"filter rate=%d",GMYawEncoder.filter_rate);
 					tft_prints(1,4,"temp sp=%d",bufferedGimbalPositionSetpoint);
 		
-					if(GimbalState==StaticState) tft_prints(1,5,"speed=%d",gimbalSpeedStaticOutput); 
-					else tft_prints(1,5,"speed=%d",gimbalSpeedMoveOutput);
+//					if(GimbalState==StaticState) tft_prints(1,5,"speed=%d",gimbalSpeedStaticOutput); 
+//					else tft_prints(1,5,"speed=%d",gimbalSpeedMoveOutput);
 					tft_prints(1,6,"angle=%f",GMYawEncoder.ecd_angle);
 					if(GimbalState==MovingState) tft_prints(1,7,"speed_tar=%d",gimbalSpeedSetpoint);
 					tft_prints(1,8,"mouse.xt=%d",DBUS_ReceiveData.mouse.xtotal);

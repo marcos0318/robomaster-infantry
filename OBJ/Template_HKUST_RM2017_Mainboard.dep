@@ -40,7 +40,7 @@ I (ticks.h)(0x58A90E0E)
 I (buzzer.h)(0x58A90E0E)
 I (gpio.h)(0x58A90E0E)
 I (timer.h)(0x58A90E0E)
-F (.\main.c)(0x58AC2056)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-I\\Mac\Home\Desktop\git\robomaster-infantry\user\RTE-I"C:\Program Files (x86)\Parallels\ARM\CMSIS\Include"-IDevice\Include-D__UVISION_VERSION="521" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x58AD92FD)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-I\\Mac\Home\Desktop\git\robomaster-infantry\user\RTE-I"C:\Program Files (x86)\Parallels\ARM\CMSIS\Include"-IDevice\Include-D__UVISION_VERSION="521" -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (main.h)(0x58A90E53)
 I (C:\Program Files (x86)\Parallels\ARM\ARMCC\include\stdio.h)(0x574E3E26)
 I (C:\Program Files (x86)\Parallels\ARM\ARMCC\include\stdlib.h)(0x574E3E26)
