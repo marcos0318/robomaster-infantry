@@ -1,3 +1,3 @@
 ..\obj\pid.o: PID.c
 ..\obj\pid.o: PID.h
-..\obj\pid.o: C:\Program Files (x86)\Parallels\ARM\ARMCC\Bin\..\include\stdint.h
+..\obj\pid.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h

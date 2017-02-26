@@ -1,4 +1,4 @@
---cpu Cortex-M4.fp
+--cpu=Cortex-M4.fp
 "..\obj\stm32f4xx_it.o"
 "..\obj\main.o"
 "..\obj\system_stm32f4xx.o"
