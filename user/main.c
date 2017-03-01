@@ -104,8 +104,9 @@ int main(void)
 	incPIDinit(&gimbalSpeedMoveState);
 	//incPIDinit(&gimbalSpeedStaticState);
 
-	incPIDset(&gimbalPositionState, 0.6,0.1,0);
-	incPIDset(&gimbalSpeedMoveState, 60,3,40);
+	incPIDset(&gimbalPositionState, 20,0.6
+	,240);
+	incPIDset(&gimbalSpeedMoveState, 20,0.01,0);
 	//incPIDset(&gimbalSpeedStaticState, 80.0, 7, 100);
 	//incPIDsetpoint(&gimbalSpeedStaticState, 0);
 	while (1)  {	
@@ -245,8 +246,8 @@ int main(void)
 				incPIDsetpoint(&gimbalPositionState, bufferedGimbalPositionSetpoint);
 				gimbalSpeedSetpoint+=incPIDcalc(&gimbalPositionState, (int32_t)(GMYawEncoder.ecd_angle));
 				//Limit the output
-				if (gimbalSpeedSetpoint > 1000) gimbalSpeedSetpoint = 1000;
-				else if (gimbalSpeedSetpoint < -1000) gimbalSpeedSetpoint = -1000;
+				if (gimbalSpeedSetpoint > 700) gimbalSpeedSetpoint = 700;
+				else if (gimbalSpeedSetpoint < -700) gimbalSpeedSetpoint = -700;
 				//incPIDClearError(&gimbalSpeedStaticState);
 				incPIDsetpoint(&gimbalSpeedMoveState, gimbalSpeedSetpoint);
 				gimbalSpeedMoveOutput+=incPIDcalc(&gimbalSpeedMoveState, GMYawEncoder.filter_rate);
