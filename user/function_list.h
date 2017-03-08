@@ -9,6 +9,7 @@
 #include "judge.h"
 #include "PID.h"
 #include "helper_functions.h"
+#include "general_control.h"
 
 //Brush Motor Functions
 void Brush_motor_pwm_dir_init(void);

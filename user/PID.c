@@ -11,11 +11,30 @@ int16_t pid_process( struct pid_control_states* states, int32_t* setpoint, int32
 	int32_t output = kp* 	states->current_error 
 									+ki* states->cummulated_error 
 									+kd* (states->current_error-states->last_error);
-	
 		
 	return output;
 	
 }	
+
+float fpid_process( struct fpid_control_states* states, float* setpoint, float* feedback, float kp, float ki, float kd){
+
+		//first update current state 
+	states->last_error	= states->current_error;
+	states->current_error = *setpoint - *feedback;
+	states->cummulated_error += states->current_error;
+	
+	
+		//then return the output value
+	float output = kp* 	states->current_error 
+									+ki* states->cummulated_error 
+									+kd* (states->current_error-states->last_error);
+		
+	return output;
+	
+}	
+
+
+
 
 int16_t pid_process_gai1( struct pid_control_states* states, int32_t* setpoint, int32_t* feedback, int32_t kp, int32_t ki, int32_t kd ) {
 	states->last_error	= states->current_error;

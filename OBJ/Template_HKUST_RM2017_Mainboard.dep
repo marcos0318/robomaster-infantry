@@ -40,7 +40,7 @@ I (ticks.h)(0x55E556EA)
 I (buzzer.h)(0x5846B8B2)
 I (gpio.h)(0x57B42B6C)
 I (timer.h)(0x55E556EA)
-F (.\main.c)(0x58B3E27B)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+F (.\main.c)(0x58BFEE8F)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
 I (main.h)(0x5898717A)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F606B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F606B8)
@@ -95,14 +95,15 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F606B8)
 I (encoder.h)(0x58485226)
 I (data_monitor.h)(0x58712230)
 I (adc.h)(0x5846BC24)
-I (function_list.h)(0x589BFA07)
+I (function_list.h)(0x58BFAF28)
 I (pneumatic.h)(0x5846C81C)
 I (canBusProcess.h)(0x58958398)
 I (can.h)(0x585C4C46)
-I (Dbus.h)(0x58A6803E)
+I (Dbus.h)(0x58B8F765)
 I (judge.h)(0x585858B8)
-I (PID.h)(0x58A8662D)
-I (helper_functions.h)(0x589C077F)
+I (PID.h)(0x58BFB96F)
+I (helper_functions.h)(0x58BFB96F)
+I (general_control.h)(0x58BFB674)
 F (.\system_stm32f4xx.c)(0x55E556EA)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\system_stm32f4xx.o --omf_browse ..\obj\system_stm32f4xx.crf --depend ..\obj\system_stm32f4xx.d)
 I (stm32f4xx.h)(0x55E556EA)
 I (..\CORE\core_cm4.h)(0x55E556E8)
@@ -1032,7 +1033,7 @@ I (buzzer_song.h)(0x580114C8)
 I (buzzer.h)(0x5846B8B2)
 I (timer.h)(0x55E556EA)
 I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x57F606B6)
-I (Dbus.h)(0x58A6803E)
+I (Dbus.h)(0x58B8F765)
 F (.\adc.c)(0x5846BC18)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\adc.o --omf_browse ..\obj\adc.crf --depend ..\obj\adc.d)
 I (adc.h)(0x5846BC24)
 I (..\FWLIB\inc\stm32f4xx_gpio.h)(0x55E556E8)
@@ -1269,8 +1270,8 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x55E556E8)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x55E556E8)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x55E556E8)
 I (judge.h)(0x585858B8)
-F (.\Dbus.c)(0x58A67E84)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\dbus.o --omf_browse ..\obj\dbus.crf --depend ..\obj\dbus.d)
-I (Dbus.h)(0x58A6803E)
+F (.\Dbus.c)(0x58BFE93D)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\dbus.o --omf_browse ..\obj\dbus.crf --depend ..\obj\dbus.d)
+I (Dbus.h)(0x58B8F765)
 I (stm32f4xx.h)(0x55E556EA)
 I (..\CORE\core_cm4.h)(0x55E556E8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
@@ -1400,9 +1401,12 @@ I (..\FWLIB\inc\stm32f4xx_dac.h)(0x55E556E8)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x55E556E8)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x55E556E8)
 I (judge.h)(0x585858B8)
-F (.\PID.c)(0x58A86632)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\pid.o --omf_browse ..\obj\pid.crf --depend ..\obj\pid.d)
-I (PID.h)(0x58A8662D)
+F (.\PID.c)(0x58BAC721)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\pid.o --omf_browse ..\obj\pid.crf --depend ..\obj\pid.d)
+I (PID.h)(0x58BFB96F)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
 F (.\helper_functions.c)(0x589C077F)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\helper_functions.o --omf_browse ..\obj\helper_functions.crf --depend ..\obj\helper_functions.d)
-I (helper_functions.h)(0x589C077F)
+I (helper_functions.h)(0x58BFB96F)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
+F (.\general_control.c)(0x58BFB06D)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.2_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\general_control.o --omf_browse ..\obj\general_control.crf --depend ..\obj\general_control.d)
+I (general_control.h)(0x58BFB674)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)

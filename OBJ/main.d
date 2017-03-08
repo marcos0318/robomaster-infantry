@@ -70,3 +70,4 @@
 ..\obj\main.o: judge.h
 ..\obj\main.o: PID.h
 ..\obj\main.o: helper_functions.h
+..\obj\main.o: general_control.h

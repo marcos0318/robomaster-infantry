@@ -38,6 +38,7 @@
 "..\obj\data_monitor.o"
 "..\obj\pid.o"
 "..\obj\helper_functions.o"
+"..\obj\general_control.o"
 --strict --scatter "..\OBJ\Template.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

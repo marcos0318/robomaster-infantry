@@ -98,8 +98,8 @@ void DBUS_DataDecoding(void)
   DBUS_ReceiveData.mouse.ytotal += DBUS_ReceiveData.mouse.y;
   DBUS_ReceiveData.mouse.ztotal += DBUS_ReceiveData.mouse.z;
   
-  if(DBUS_ReceiveData.mouse.xtotal>2600) DBUS_ReceiveData.mouse.xtotal=2600;
-  if(DBUS_ReceiveData.mouse.xtotal<0) DBUS_ReceiveData.mouse.xtotal=0;
+  //if(DBUS_ReceiveData.mouse.xtotal>2000) DBUS_ReceiveData.mouse.xtotal=2000;
+  //if(DBUS_ReceiveData.mouse.xtotal<-2000) DBUS_ReceiveData.mouse.xtotal=-2000;
   
 	DBUS_ReceiveData.mouse.press_left 	= DBUSBuffer[12];	// is pressed?
 	DBUS_ReceiveData.mouse.press_right 	= DBUSBuffer[13];

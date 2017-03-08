@@ -614,6 +614,11 @@
               <FileType>1</FileType>
               <FilePath>.\helper_functions.c</FilePath>
             </File>
+            <File>
+              <FileName>general_control.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\general_control.c</FilePath>
+            </File>
           </Files>
         </Group>
       </Groups>
