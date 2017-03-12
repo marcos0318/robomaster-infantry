@@ -3,9 +3,9 @@
 <title>Static Call Graph - [..\OBJ\Template.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image ..\OBJ\Template.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Wed Mar 08 19:44:19 2017
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5060422: Last Updated: Fri Mar 10 15:56:58 2017
 <BR><P>
-<H3>Maximum Stack Usage =        464 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        456 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 __rt_entry_main &rArr; main &rArr; tft_prints &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 <P>
@@ -401,7 +401,7 @@ Global Symbols
 <P><STRONG><a name="[1be]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[95]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 464 + Unknown Stack Size
+<BR><BR>[Stack]<UL><LI>Max Depth = 456 + Unknown Stack Size
 <LI>Call Chain = __rt_entry_main &rArr; main &rArr; tft_prints &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -479,25 +479,25 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[96]"></a>main</STRONG> (Thumb, 2108 bytes, Stack size 48 bytes, main.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 464 + Unknown Stack Size
+<P><STRONG><a name="[96]"></a>main</STRONG> (Thumb, 1684 bytes, Stack size 40 bytes, main.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 456 + Unknown Stack Size
 <LI>Call Chain = main &rArr; tft_prints &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wheel_setpoints_adjust
-<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_update
-<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_prints
-<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_clear_line
+<LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_update
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_prints
+<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_clear_line
 <LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pid_process_gai1
 <LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pid_process
-<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;incPIDsetpoint
+<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;incPIDsetpoint
 <LI><a href="#[b0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;incPIDset
 <LI><a href="#[af]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;incPIDinit
-<LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;incPIDcalc
+<LI><a href="#[be]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;incPIDcalc
 <LI><a href="#[b1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_ms_ticks
-<LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fpid_process
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fpid_process
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buffer_out
 <LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;buffer_in
-<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_CM_Speed
+<LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_CM_Speed
 <LI><a href="#[b7]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;DBUS_CheckPush
 <LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;init
 <LI><a href="#[b2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_f2d
@@ -906,7 +906,7 @@ Global Symbols
 <P><STRONG><a name="[158]"></a>CAN_Transmit</STRONG> (Thumb, 304 bytes, Stack size 8 bytes, stm32f4xx_can.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = CAN_Transmit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_CM_Speed
+<BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_CM_Speed
 <LI><a href="#[159]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;Set_Gimbal_Current
 </UL>
 
@@ -1922,7 +1922,7 @@ Global Symbols
 <LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_ResetBits
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GPIO_SetBits
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_update
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_update
 <LI><a href="#[125]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_put_pixel
 <LI><a href="#[122]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_set_char_pos
 <LI><a href="#[121]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_set_pixel_pos
@@ -2026,10 +2026,10 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_write_data
 <LI><a href="#[113]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_write_command
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_update
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_update
 </UL>
 
-<P><STRONG><a name="[c0]"></a>tft_clear_line</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, 1.8 tft_display.o(.text))
+<P><STRONG><a name="[bf]"></a>tft_clear_line</STRONG> (Thumb, 68 bytes, Stack size 8 bytes, 1.8 tft_display.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = tft_clear_line
 </UL>
 <BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
@@ -2037,7 +2037,7 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[123]"></a>tft_clear</STRONG> (Thumb, 22 bytes, Stack size 8 bytes, 1.8 tft_display.o(.text), UNUSED)
-<BR><BR>[Calls]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_clear_line
+<BR><BR>[Calls]<UL><LI><a href="#[bf]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_clear_line
 </UL>
 <BR>[Called By]<UL><LI><a href="#[124]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_toggle
 </UL>
@@ -2055,10 +2055,10 @@ Global Symbols
 <P><STRONG><a name="[127]"></a>tft_char_is_changed</STRONG> (Thumb, 186 bytes, Stack size 12 bytes, 1.8 tft_display.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = tft_char_is_changed
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_update
+<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_update
 </UL>
 
-<P><STRONG><a name="[c1]"></a>tft_prints</STRONG> (Thumb, 268 bytes, Stack size 296 bytes, 1.8 tft_display.o(.text))
+<P><STRONG><a name="[c0]"></a>tft_prints</STRONG> (Thumb, 268 bytes, Stack size 296 bytes, 1.8 tft_display.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 416 + Unknown Stack Size
 <LI>Call Chain = tft_prints &rArr; vsprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
@@ -2067,7 +2067,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[c2]"></a>tft_update</STRONG> (Thumb, 1454 bytes, Stack size 40 bytes, 1.8 tft_display.o(.text))
+<P><STRONG><a name="[c1]"></a>tft_update</STRONG> (Thumb, 1454 bytes, Stack size 40 bytes, 1.8 tft_display.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 72<LI>Call Chain = tft_update &rArr; tft_set_char_pos &rArr; tft_write_data
 </UL>
 <BR>[Calls]<UL><LI><a href="#[127]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_char_is_changed
@@ -2421,7 +2421,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN1_RX0_IRQHandler
 </UL>
 
-<P><STRONG><a name="[bc]"></a>Set_CM_Speed</STRONG> (Thumb, 92 bytes, Stack size 48 bytes, canbusprocess.o(.text))
+<P><STRONG><a name="[c2]"></a>Set_CM_Speed</STRONG> (Thumb, 92 bytes, Stack size 48 bytes, canbusprocess.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = Set_CM_Speed &rArr; CAN_Transmit
 </UL>
 <BR>[Calls]<UL><LI><a href="#[158]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;CAN_Transmit
@@ -2538,7 +2538,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[bd]"></a>fpid_process</STRONG> (Thumb, 82 bytes, Stack size 0 bytes, pid.o(.text))
+<P><STRONG><a name="[bc]"></a>fpid_process</STRONG> (Thumb, 82 bytes, Stack size 0 bytes, pid.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
@@ -2560,13 +2560,13 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[bf]"></a>incPIDcalc</STRONG> (Thumb, 88 bytes, Stack size 8 bytes, pid.o(.text))
+<P><STRONG><a name="[be]"></a>incPIDcalc</STRONG> (Thumb, 88 bytes, Stack size 8 bytes, pid.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = incPIDcalc
 </UL>
 <BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[be]"></a>incPIDsetpoint</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, pid.o(.text))
+<P><STRONG><a name="[bd]"></a>incPIDsetpoint</STRONG> (Thumb, 4 bytes, Stack size 0 bytes, pid.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[96]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
@@ -2599,7 +2599,7 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[61]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_sputc
 <LI><a href="#[169]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_char_common
 </UL>
-<BR>[Called By]<UL><LI><a href="#[c1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_prints
+<BR>[Called By]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tft_prints
 </UL>
 
 <P><STRONG><a name="[15f]"></a>__aeabi_memcpy4</STRONG> (Thumb, 0 bytes, Stack size 8 bytes, rt_memcpy_w.o(.text))

@@ -2,9 +2,9 @@
 #include "function_list.h"
 
 
-#define BUFFER_LENGTH 300
+#define BUFFER_LENGTH 500
 #define POWER_BUFFER_LENGTH 20
-#define ANGLE_PID_LIMIT 2000
+#define ANGLE_PID_LIMIT 300
 #define MOVING_BOUND_1 200
 #define MOVING_BOUND_2 450
 enum State{StaticState,MovingState};
@@ -58,7 +58,7 @@ int32_t kd_angle = 1;
 	
 
 //The power control, NOT intend to use pid control, but still consider using close-loop control 
-int32_t FILTER_RATE_LIMIT = 1000;
+int32_t FILTER_RATE_LIMIT = 700;
 //int32_t power_buffer[POWER_BUFFER_LENGTH];
 float feedback_current = 0;
 float feedback_voltage = 0;
@@ -76,14 +76,13 @@ int32_t kd_power = 0;
 
 
 //Gimbal yaw control (Position loop and velocity loop) 
-float prevGMYawEncoderEcdAngle=0;
 float gimbalPositionSetpoint = 0;// prevGimbalPositionSetpoint = 0;
 float bufferedGimbalPositionSetpoint = 0;
 float gimbalPositionFeedback= 0;
 bool isGimbalPositionSetpointIncrease = true;
 
 struct fpid_control_states gimbalPositionState = {0,0,0};
-float gpos_kp = 0.25;
+float gpos_kp = 0.3;
 float gpos_ki = 0.0003;
 float gpos_kd = 2;
 
@@ -94,6 +93,10 @@ int32_t gimbalSpeedSetpoint = 0;
 int32_t gimbalSpeedMoveOutput = 0;// gimbalSpeedStaticOutput = 0;
 
 
+//The coorperation of gimbal and the chasis
+//The direction is from 0 to 8192
+//The gyro of chasis is ranged from 0 to 3600, so we need converstion
+int32_t direction = 0;
 
 int main(void)
 {	
@@ -121,7 +124,7 @@ int main(void)
 		{
 			ticks_msimg = get_ms_ticks();  //maximum 1000000	
 			
-			if (DBUS_ReceiveData.rc.switch_right == 1) {
+			if (DBUS_ReceiveData.rc.switch_left == 1) { //Only base, now working on auto follow mode
 			
 				if (ticks_msimg%20==0){
 					//power control 
@@ -155,9 +158,12 @@ int main(void)
 				int32_t angular_speed_limitor = 200;
 				int32_t forward_speed = (DBUS_ReceiveData.rc.ch1 + DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660) * speed_multiplier/speed_limitor ;
 				int32_t right_speed =   (DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_E)*660 - DBUS_CheckPush(KEY_Q)*660) * speed_multiplier/speed_limitor ;
-				int32_t increment_of_angle = (DBUS_ReceiveData.rc.ch2 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660) /angular_speed_limitor;
+				//int32_t increment_of_angle = (DBUS_ReceiveData.rc.ch2 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660) /angular_speed_limitor;
+				direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*5 ;
+
 
 				//if the car is moving, slower the angle_setpoint change 
+				/*
 				if ( (abs(DBUS_ReceiveData.rc.ch1+ DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660)+abs(DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660))> MOVING_BOUND_1){
 					if(increment_of_angle > 2) increment_of_angle = 2;
 					else if (increment_of_angle < -2) increment_of_angle = -2;
@@ -180,8 +186,9 @@ int main(void)
 					if(increment_of_angle > 1) increment_of_angle = 1;
 					else if (increment_of_angle < -1) increment_of_angle = -1;
 				}
-			
-				setpoint_angle += increment_of_angle;
+				*/
+
+				setpoint_angle = -direction * 3600/9720;
 				
 				feedback_angle = output_angle;
 				
@@ -228,15 +235,20 @@ int main(void)
 				for (int i = 0 ; i < 4 ; i++){
 					wheel_outputs[i] = pid_process(&states[i], &wheel_setpoints[i], &wheel_feedbacks[i], kp,ki,kd);
 				}
-						 
-				Set_CM_Speed(CAN2, wheel_outputs[0], wheel_outputs[1], wheel_outputs[2], wheel_outputs[3]);
-				Set_CM_Speed(CAN1, 0, 0, 0, 0);
-			}	
-			else if (DBUS_ReceiveData.rc.switch_right == 3) {
-				//get position here
-				
-				gimbalPositionSetpoint = -DBUS_ReceiveData.mouse.xtotal*5 -DBUS_ReceiveData.rc.ch2*2;
-						
+
+
+
+
+				//The separate gimbal control 
+
+
+				//Gimbal input
+				gimbalPositionSetpoint = direction + output_angle*27/10;
+				if (gimbalPositionSetpoint > 1500) gimbalPositionSetpoint = 1500;
+				if (gimbalPositionSetpoint < -1500) gimbalPositionSetpoint = -1500;
+
+
+				/*					
 				if(bufferedGimbalPositionSetpoint < gimbalPositionSetpoint) isGimbalPositionSetpointIncrease = true;
 				else isGimbalPositionSetpointIncrease = false;
 				if(isGimbalPositionSetpointIncrease){
@@ -249,45 +261,51 @@ int main(void)
 					if(bufferedGimbalPositionSetpoint < gimbalPositionSetpoint) 
 						bufferedGimbalPositionSetpoint = gimbalPositionSetpoint;
 				}
-
+				*/
 				//incPIDsetpoint(&gimbalPositionState, bufferedGimbalPositionSetpoint);
 				//gimbalSpeedSetpoint += incPIDcalc(&gimbalPositionState, (int32_t)(GMYawEncoder.ecd_angle));
 				gimbalPositionFeedback = GMYawEncoder.ecd_angle;
-				gimbalSpeedSetpoint = (int32_t)fpid_process(&gimbalPositionState, &bufferedGimbalPositionSetpoint, &gimbalPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
+				gimbalSpeedSetpoint = (int32_t)fpid_process(&gimbalPositionState, &gimbalPositionSetpoint, &gimbalPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
 
 
 				//Limit the output
-				if (gimbalSpeedSetpoint > 150) gimbalSpeedSetpoint = 150;
-				else if (gimbalSpeedSetpoint < -150) gimbalSpeedSetpoint = -150;
+				if (gimbalSpeedSetpoint > 500) gimbalSpeedSetpoint = 500;
+				else if (gimbalSpeedSetpoint < -500) gimbalSpeedSetpoint = -500;
 					
 				//mock speed here
 				//gimbalSpeedSetpoint = DBUS_ReceiveData.rc.ch2 * 0.5;
 				//Get the speed here
 
-				//incPIDClearError(&gimbalSpeedStaticState);
 				incPIDsetpoint(&gimbalSpeedMoveState, gimbalSpeedSetpoint);
 				gimbalSpeedMoveOutput+=incPIDcalc(&gimbalSpeedMoveState, GMYawEncoder.filter_rate);
-		  	Set_CM_Speed(CAN1, gimbalSpeedMoveOutput,0,0,0);
-				
-				
+
+				//Print gimbal Yaw	
 			  if(ticks_msimg%20==0){	
 					for (int j=2;j<12;j++) tft_clear_line(j);
-					tft_prints(1,2,"pos_set=%d",gimbalPositionSetpoint);
-					tft_prints(1,3,"bfd_pos_set=%.1f",bufferedGimbalPositionSetpoint);
-					tft_prints(1,4,"filter rate=%.1f",GMYawEncoder.filter_rate);
-					tft_prints(1,5,"i_angle=%d", (int)GMYawEncoder.ecd_angle);
-					tft_prints(1,6,"f_angle=%f",GMYawEncoder.ecd_angle);
+					tft_prints(1,2,"pos_set= %.1f",gimbalPositionSetpoint);
+					tft_prints(1,3,"D= %d", direction);
+					tft_prints(1,4,"RA= %d", feedback_angle);
+
+
 					tft_prints(1,8,"mouse.xt=%d",DBUS_ReceiveData.mouse.xtotal);
 					tft_prints(1,9,"mouse.yt=%d",DBUS_ReceiveData.mouse.ytotal);
 					//tft_prints(1,10,"mouse.z=%d",DBUS_ReceiveData.mouse.z);
 					tft_prints(1,11,"l=%d,r=%d",DBUS_ReceiveData.mouse.press_left,DBUS_ReceiveData.mouse.press_right);
 					tft_update();		
 				}
+
+				//call the acturater function
+
+		  	Set_CM_Speed(CAN1, gimbalSpeedMoveOutput,0,0,0);						 
+				Set_CM_Speed(CAN2, wheel_outputs[0], wheel_outputs[1], wheel_outputs[2], wheel_outputs[3]);
+			}	
+			else if (DBUS_ReceiveData.rc.switch_left == 3) { //Also the stop mode now
+				Set_CM_Speed(CAN1,0,0,0,0);
+				Set_CM_Speed(CAN2,0,0,0,0);
 					
 		
-				prevGMYawEncoderEcdAngle=GMYawEncoder.ecd_angle;
 			} 
-			else {
+			else if (DBUS_ReceiveData.rc.switch_left ==2) { //The stop mode
 
 
 
