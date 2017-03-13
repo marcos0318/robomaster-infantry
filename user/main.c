@@ -86,7 +86,19 @@ float gpos_kp = 0.3;
 float gpos_ki = 0.0003;
 float gpos_kd = 2;
 
+//********************************************************************************************************************
 
+//DBUS control data
+int32_t speed_limitor  = 660;
+int32_t speed_multiplier;
+int32_t angular_speed_limitor = 200;
+int32_t forward_speed ;
+int32_t right_speed;
+int32_t increment_of_angle;
+int32_t mouse_prev=0;
+float gimbalNotOutGyroOutput=0;
+bool locked=false;   //for key F
+//********************************************************************************************************************
 
 struct inc_pid_states gimbalSpeedMoveState;// gimbalSpeedStaticState;
 int32_t gimbalSpeedSetpoint = 0;
@@ -117,6 +129,7 @@ int main(void)
 	incPIDset(&gimbalSpeedMoveState, 70,3.7,0);
 	//incPIDset(&gimbalSpeedStaticState, 80.0, 7, 100);
 	//incPIDsetpoint(&gimbalSpeedStaticState, 0);
+	mouse_prev=DBUS_ReceiveData.mouse.xtotal;
 	while (1)  {	
 
 
@@ -124,8 +137,11 @@ int main(void)
 		{
 			ticks_msimg = get_ms_ticks();  //maximum 1000000	
 			
-			if (DBUS_ReceiveData.rc.switch_left == 1) { //Only base, now working on auto follow mode
-			
+			if (DBUS_ReceiveData.rc.switch_left == 1||DBUS_ReceiveData.rc.switch_left == 3) { 
+
+				
+//********************************************************************************************************************
+//power control starts
 				if (ticks_msimg%20==0){
 					//power control 
 	      			//imitate the process in judging system
@@ -148,48 +164,91 @@ int main(void)
 					if (wheel_setpoint_coefficient < 200) {wheel_setpoint_coefficient = 200;}
 					if (wheel_setpoint_coefficient > 1000) {wheel_setpoint_coefficient = 1000;}
 				}
+//power control ends
+//********************************************************************************************************************				
 					
-					
-
+//********************************************************************************************************************
+//DBUS data analyze begins
 				//Analyse the data received from DBUS and transfer moving command					
 				
-				int32_t speed_limitor  = 660;
-				int32_t speed_multiplier = FILTER_RATE_LIMIT;
-				int32_t angular_speed_limitor = 200;
-				int32_t forward_speed = (DBUS_ReceiveData.rc.ch1 + DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660) * speed_multiplier/speed_limitor ;
-				int32_t right_speed =   (DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_E)*660 - DBUS_CheckPush(KEY_Q)*660) * speed_multiplier/speed_limitor ;
-				//int32_t increment_of_angle = (DBUS_ReceiveData.rc.ch2 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660) /angular_speed_limitor;
-				direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*5 ;
-
-
+				speed_limitor  = 660;
+				speed_multiplier = FILTER_RATE_LIMIT;
+				angular_speed_limitor = 200;
+				forward_speed = (DBUS_ReceiveData.rc.ch1 + DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660) * speed_multiplier/speed_limitor ;
+				right_speed =   (DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_E)*660 - DBUS_CheckPush(KEY_Q)*660) * speed_multiplier/speed_limitor ;
+				if(DBUS_ReceiveData.rc.switch_left == 3)		//keyboard-mouse control mode
+					increment_of_angle = (DBUS_ReceiveData.rc.ch2 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660) /angular_speed_limitor;
+				if(DBUS_ReceiveData.rc.switch_left == 1)		//auto follow mode
+					direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*5 ;
+				
+				if(DBUS_ReceiveData.rc.switch_left == 3 )		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
+				{
+					if(DBUS_ReceiveData.mouse.xtotal<1500 && DBUS_ReceiveData.mouse.xtotal>-1500 && !DBUS_CheckPush(KEY_F))
+						gimbalNotOutGyroOutput=output_angle;
+					if(DBUS_ReceiveData.mouse.xtotal>=1500){
+						gimbalPositionSetpoint=-1500;
+						if(!locked)
+							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/27;
+						DBUS_ReceiveData.mouse.xtotal=1500;
+					}else if(DBUS_ReceiveData.mouse.xtotal<=-1500){
+						gimbalPositionSetpoint=1500;
+						if(!locked)
+							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/27;
+						DBUS_ReceiveData.mouse.xtotal=-1500;
+					} else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal;
+				
+					if( DBUS_CheckPush(KEY_F))		//calibrating
+					{
+						gimbalPositionSetpoint=0;
+						if(abs(output_angle-setpoint_angle)<30) locked=false;
+						if(!locked){
+							setpoint_angle=gimbalNotOutGyroOutput-GMYawEncoder.ecd_angle/2.7;
+							locked=true;
+							DBUS_ReceiveData.mouse.xtotal=0;
+						}
+					}
+					else locked=false;
+					
+					mouse_prev=DBUS_ReceiveData.mouse.xtotal;
+				}
+//DBUS data analyze ends
+//********************************************************************************************************************
 				//if the car is moving, slower the angle_setpoint change 
-				/*
-				if ( (abs(DBUS_ReceiveData.rc.ch1+ DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660)+abs(DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660))> MOVING_BOUND_1){
-					if(increment_of_angle > 2) increment_of_angle = 2;
-					else if (increment_of_angle < -2) increment_of_angle = -2;
+//for keyboard-mouse mode
+				
+				if(DBUS_ReceiveData.rc.switch_left == 3){
+				
+					if ( (abs(DBUS_ReceiveData.rc.ch1+ DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660)+abs(DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660))> MOVING_BOUND_1){
+						if(increment_of_angle > 2) increment_of_angle = 2;
+						else if (increment_of_angle < -2) increment_of_angle = -2;
+						
+					}
 					
-				}
-				
-				if ( (abs(DBUS_ReceiveData.rc.ch1+ DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660 )+abs(DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660))> MOVING_BOUND_2){
-					if(increment_of_angle > 1) increment_of_angle = 1;
-					else if (increment_of_angle < -1) increment_of_angle = -1;
+					if ( (abs(DBUS_ReceiveData.rc.ch1+ DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660 )+abs(DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660))> MOVING_BOUND_2){
+						if(increment_of_angle > 1) increment_of_angle = 1;
+						else if (increment_of_angle < -1) increment_of_angle = -1;
+						
+					}
 					
+					//Limit the angle setpoint by the FILTER_RATE_LIMIT we can only test the static time, but not the dynamic 
+					if (FILTER_RATE_LIMIT < 501){
+						if(increment_of_angle > 2) increment_of_angle = 2;
+							else if (increment_of_angle < -2) increment_of_angle = -2;
+					}
+					
+					if (FILTER_RATE_LIMIT < 301){
+						if(increment_of_angle > 1) increment_of_angle = 1;
+						else if (increment_of_angle < -1) increment_of_angle = -1;
+					}
+				
 				}
 				
-				//Limit the angle setpoint by the FILTER_RATE_LIMIT we can only test the static time, but not the dynamic 
-				if (FILTER_RATE_LIMIT < 501){
-					if(increment_of_angle > 2) increment_of_angle = 2;
-				    else if (increment_of_angle < -2) increment_of_angle = -2;
-				}
-				
-				if (FILTER_RATE_LIMIT < 301){
-					if(increment_of_angle > 1) increment_of_angle = 1;
-					else if (increment_of_angle < -1) increment_of_angle = -1;
-				}
-				*/
-
-				setpoint_angle = -direction * 3600/9720;
-				
+//********************************************************************************************************************
+//for auto follow
+				if(DBUS_ReceiveData.rc.switch_left == 1)
+					setpoint_angle = -direction * 3600/9720;
+//********************************************************************************************************************
+//chasis turing speed limit control begins				
 				feedback_angle = output_angle;
 				
 				
@@ -218,6 +277,10 @@ int main(void)
 				//This is where the power control happen
 				for(int i = 0 ; i < 4 ; i++){
 						wheel_setpoints[i] = wheel_setpoints[i]*wheel_setpoint_coefficient/1000;
+						if(DBUS_CheckPush(KEY_CTRL))
+							wheel_setpoints[i]*=0.3;
+						else if(!DBUS_CheckPush(KEY_SHIFT))
+							wheel_setpoints[i]*=0.7;
 				}
 				
 				wheel_setpoints_adjust(&wheel_setpoints[0], &wheel_setpoints[1],&wheel_setpoints[2],&wheel_setpoints[3] ,FILTER_RATE_LIMIT );
@@ -235,35 +298,42 @@ int main(void)
 				for (int i = 0 ; i < 4 ; i++){
 					wheel_outputs[i] = pid_process(&states[i], &wheel_setpoints[i], &wheel_feedbacks[i], kp,ki,kd);
 				}
+//chasis turning speed limit control ends
+//********************************************************************************************************************
+//auto follow mode gimbal control begins
+				if(DBUS_ReceiveData.rc.switch_left == 1){
 
-
-
-
-				//The separate gimbal control 
-
-
-				//Gimbal input
-				gimbalPositionSetpoint = direction + output_angle*27/10;
-				if (gimbalPositionSetpoint > 1500) gimbalPositionSetpoint = 1500;
-				if (gimbalPositionSetpoint < -1500) gimbalPositionSetpoint = -1500;
-
-
-				/*					
-				if(bufferedGimbalPositionSetpoint < gimbalPositionSetpoint) isGimbalPositionSetpointIncrease = true;
-				else isGimbalPositionSetpointIncrease = false;
-				if(isGimbalPositionSetpointIncrease){
-					bufferedGimbalPositionSetpoint+=70;
-					if (bufferedGimbalPositionSetpoint > gimbalPositionSetpoint)
-					bufferedGimbalPositionSetpoint = gimbalPositionSetpoint;
+					//The separate gimbal control 
+					//Gimbal input
+					gimbalPositionSetpoint = direction + output_angle*27/10;
+					if (gimbalPositionSetpoint > 1500) gimbalPositionSetpoint = 1500;
+					if (gimbalPositionSetpoint < -1500) gimbalPositionSetpoint = -1500;
 				}
-				else {
-					bufferedGimbalPositionSetpoint-=70;
-					if(bufferedGimbalPositionSetpoint < gimbalPositionSetpoint) 
+//auto follow mode gimbal control ends
+//********************************************************************************************************************
+				if(DBUS_ReceiveData.rc.switch_left == 3){
+					
+				//position setpoint is done above
+									
+					if(bufferedGimbalPositionSetpoint < gimbalPositionSetpoint) isGimbalPositionSetpointIncrease = true;
+					else isGimbalPositionSetpointIncrease = false;
+					if(isGimbalPositionSetpointIncrease){
+						bufferedGimbalPositionSetpoint+=70;
+						if (bufferedGimbalPositionSetpoint > gimbalPositionSetpoint)
 						bufferedGimbalPositionSetpoint = gimbalPositionSetpoint;
+					}
+					else {
+						bufferedGimbalPositionSetpoint-=70;
+						if(bufferedGimbalPositionSetpoint < gimbalPositionSetpoint) 
+							bufferedGimbalPositionSetpoint = gimbalPositionSetpoint;
+					}
+					
+					//incPIDsetpoint(&gimbalPositionState, bufferedGimbalPositionSetpoint);
+					//gimbalSpeedSetpoint += incPIDcalc(&gimbalPositionState, (int32_t)(GMYawEncoder.ecd_angle));
+					
 				}
-				*/
-				//incPIDsetpoint(&gimbalPositionState, bufferedGimbalPositionSetpoint);
-				//gimbalSpeedSetpoint += incPIDcalc(&gimbalPositionState, (int32_t)(GMYawEncoder.ecd_angle));
+//********************************************************************************************************************
+
 				gimbalPositionFeedback = GMYawEncoder.ecd_angle;
 				gimbalSpeedSetpoint = (int32_t)fpid_process(&gimbalPositionState, &gimbalPositionSetpoint, &gimbalPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
 
@@ -285,7 +355,7 @@ int main(void)
 					tft_prints(1,2,"pos_set= %.1f",gimbalPositionSetpoint);
 					tft_prints(1,3,"D= %d", direction);
 					tft_prints(1,4,"RA= %d", feedback_angle);
-
+					tft_prints(1,5,"chasis_sp= %.1f",setpoint_angle);
 
 					tft_prints(1,8,"mouse.xt=%d",DBUS_ReceiveData.mouse.xtotal);
 					tft_prints(1,9,"mouse.yt=%d",DBUS_ReceiveData.mouse.ytotal);
@@ -299,12 +369,15 @@ int main(void)
 		  	Set_CM_Speed(CAN1, gimbalSpeedMoveOutput,0,0,0);						 
 				Set_CM_Speed(CAN2, wheel_outputs[0], wheel_outputs[1], wheel_outputs[2], wheel_outputs[3]);
 			}	
+			
+			/*
 			else if (DBUS_ReceiveData.rc.switch_left == 3) { //Also the stop mode now
 				Set_CM_Speed(CAN1,0,0,0,0);
 				Set_CM_Speed(CAN2,0,0,0,0);
 					
 		
 			} 
+			*/
 			else if (DBUS_ReceiveData.rc.switch_left ==2) { //The stop mode
 
 
