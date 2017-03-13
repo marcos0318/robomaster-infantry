@@ -2,9 +2,9 @@
 #include "function_list.h"
 
 
-#define BUFFER_LENGTH 500
+#define BUFFER_LENGTH 400
 #define POWER_BUFFER_LENGTH 20
-#define ANGLE_PID_LIMIT 300
+#define ANGLE_PID_LIMIT 500
 #define MOVING_BOUND_1 200
 #define MOVING_BOUND_2 450
 enum State{StaticState,MovingState};
@@ -109,6 +109,7 @@ int32_t gimbalSpeedMoveOutput = 0;// gimbalSpeedStaticOutput = 0;
 //The direction is from 0 to 8192
 //The gyro of chasis is ranged from 0 to 3600, so we need converstion
 int32_t direction = 0;
+int32_t upperTotal = 6400;
 
 int main(void)
 {	
@@ -175,9 +176,9 @@ int main(void)
 				speed_multiplier = FILTER_RATE_LIMIT;
 				angular_speed_limitor = 200;
 				forward_speed = (DBUS_ReceiveData.rc.ch1 + DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660) * speed_multiplier/speed_limitor ;
-				right_speed =   (DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_E)*660 - DBUS_CheckPush(KEY_Q)*660) * speed_multiplier/speed_limitor ;
+				right_speed =   (DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660) * speed_multiplier/speed_limitor ;
 				if(DBUS_ReceiveData.rc.switch_left == 3)		//keyboard-mouse control mode
-					increment_of_angle = (DBUS_ReceiveData.rc.ch2 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660) /angular_speed_limitor;
+					increment_of_angle = (DBUS_ReceiveData.rc.ch2 + DBUS_CheckPush(KEY_Q)*660 - DBUS_CheckPush(KEY_E)*660) /angular_speed_limitor;
 				if(DBUS_ReceiveData.rc.switch_left == 1)		//auto follow mode
 					direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*5 ;
 				
@@ -246,7 +247,7 @@ int main(void)
 //********************************************************************************************************************
 //for auto follow
 				if(DBUS_ReceiveData.rc.switch_left == 1)
-					setpoint_angle = -direction * 3600/9720;
+					setpoint_angle = -direction * 3600/upperTotal;
 //********************************************************************************************************************
 //chasis turing speed limit control begins				
 				feedback_angle = output_angle;
@@ -305,7 +306,7 @@ int main(void)
 
 					//The separate gimbal control 
 					//Gimbal input
-					gimbalPositionSetpoint = direction + output_angle*27/10;
+					gimbalPositionSetpoint = direction + output_angle*upperTotal/3600;
 					if (gimbalPositionSetpoint > 1500) gimbalPositionSetpoint = 1500;
 					if (gimbalPositionSetpoint < -1500) gimbalPositionSetpoint = -1500;
 				}
