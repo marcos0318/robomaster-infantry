@@ -121,6 +121,9 @@ int32_t horiLength = 300;
 int32_t vertiLength = 0;
 int32_t vertiCenter = 0;
 
+int32_t currentLeft = 0;
+int32_t lastLeft = 0;
+
 int main(void)
 {	
 	init();
@@ -147,7 +150,16 @@ int main(void)
 		if (ticks_msimg != get_ms_ticks()) 
 		{
 			ticks_msimg = get_ms_ticks();  //maximum 1000000	
-			
+			lastLeft = currentLeft;
+			currentLeft = DBUS_ReceiveData.rc.switch_left;
+			if(lastLeft != currentLeft) {
+				gimbalPositionSetpoint = 0;
+				DBUS_ReceiveData.mouse.xtotal = 0;
+				output_angle = 0;
+				direction = 0;
+
+			}
+
 			if (DBUS_ReceiveData.rc.switch_left == 1||DBUS_ReceiveData.rc.switch_left == 3) { 
 
 				
@@ -203,20 +215,21 @@ int main(void)
 				}
 				if(DBUS_ReceiveData.rc.switch_left == 3 && !isRuneMode )		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
 				{
+					int32_t posMultipier = 3;
 					setpoint_angle += increment_of_angle;
-					if(DBUS_ReceiveData.mouse.xtotal<1500 && DBUS_ReceiveData.mouse.xtotal>-1500 && !DBUS_CheckPush(KEY_F))
+					if(DBUS_ReceiveData.mouse.xtotal*posMultipier<1500 && DBUS_ReceiveData.mouse.xtotal*posMultipier>-1500 && !DBUS_CheckPush(KEY_F))
 						gimbalNotOutGyroOutput=output_angle;
-					if(DBUS_ReceiveData.mouse.xtotal>=1500){
+					if(DBUS_ReceiveData.mouse.xtotal*posMultipier>=1500){
 						gimbalPositionSetpoint=-1500;
 						if(!locked)
-							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/27;
-						DBUS_ReceiveData.mouse.xtotal=1500;
-					}else if(DBUS_ReceiveData.mouse.xtotal<=-1500){
+							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/10;
+						DBUS_ReceiveData.mouse.xtotal=1500/posMultipier;
+					}else if(DBUS_ReceiveData.mouse.xtotal*posMultipier<=-1500){
 						gimbalPositionSetpoint=1500;
 						if(!locked)
-							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/27;
-						DBUS_ReceiveData.mouse.xtotal=-1500;
-					} else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal;
+							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/10;
+						DBUS_ReceiveData.mouse.xtotal=-1500/posMultipier	;
+					} else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal*posMultipier;
 				
 					if( DBUS_CheckPush(KEY_F))		//calibrating
 					{
