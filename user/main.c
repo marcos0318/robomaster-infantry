@@ -111,6 +111,16 @@ int32_t gimbalSpeedMoveOutput = 0;// gimbalSpeedStaticOutput = 0;
 int32_t direction = 0;
 int32_t upperTotal = 6400;
 
+//The rune mode
+int32_t isRuneMode = 0;
+
+
+
+int32_t horiLength = 300;
+//Still not using until pitch is done
+int32_t vertiLength = 0;
+int32_t vertiCenter = 0;
+
 int main(void)
 {	
 	init();
@@ -167,6 +177,9 @@ int main(void)
 				}
 //power control ends
 //********************************************************************************************************************				
+
+//Check whether is in Rune mode
+				isRuneMode = DBUS_CheckPush(KEY_V);
 					
 //********************************************************************************************************************
 //DBUS data analyze begins
@@ -177,13 +190,20 @@ int main(void)
 				angular_speed_limitor = 200;
 				forward_speed = (DBUS_ReceiveData.rc.ch1 + DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660) * speed_multiplier/speed_limitor ;
 				right_speed =   (DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660) * speed_multiplier/speed_limitor ;
-				if(DBUS_ReceiveData.rc.switch_left == 3)		//keyboard-mouse control mode
+				if (isRuneMode) {
+					forward_speed = 0;
+					right_speed = 0;
+				} 
+				if(DBUS_ReceiveData.rc.switch_left == 3) {	//keyboard-mouse control mode
 					increment_of_angle = (DBUS_ReceiveData.rc.ch2 + DBUS_CheckPush(KEY_Q)*660 - DBUS_CheckPush(KEY_E)*660) /angular_speed_limitor;
-				if(DBUS_ReceiveData.rc.switch_left == 1)		//auto follow mode
-					direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*5 ;
-				
-				if(DBUS_ReceiveData.rc.switch_left == 3 )		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
+					if (isRuneMode) increment_of_angle = 0;
+				}
+				if(DBUS_ReceiveData.rc.switch_left == 1) {		//auto follow mode
+					if (!isRuneMode)direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*5 ;
+				}
+				if(DBUS_ReceiveData.rc.switch_left == 3 && !isRuneMode )		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
 				{
+					setpoint_angle += increment_of_angle;
 					if(DBUS_ReceiveData.mouse.xtotal<1500 && DBUS_ReceiveData.mouse.xtotal>-1500 && !DBUS_CheckPush(KEY_F))
 						gimbalNotOutGyroOutput=output_angle;
 					if(DBUS_ReceiveData.mouse.xtotal>=1500){
@@ -214,40 +234,10 @@ int main(void)
 				}
 //DBUS data analyze ends
 //********************************************************************************************************************
-				//if the car is moving, slower the angle_setpoint change 
-//for keyboard-mouse mode
-				
-				if(DBUS_ReceiveData.rc.switch_left == 3){
-				
-					if ( (abs(DBUS_ReceiveData.rc.ch1+ DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660)+abs(DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660))> MOVING_BOUND_1){
-						if(increment_of_angle > 2) increment_of_angle = 2;
-						else if (increment_of_angle < -2) increment_of_angle = -2;
-						
-					}
-					
-					if ( (abs(DBUS_ReceiveData.rc.ch1+ DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660 )+abs(DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660))> MOVING_BOUND_2){
-						if(increment_of_angle > 1) increment_of_angle = 1;
-						else if (increment_of_angle < -1) increment_of_angle = -1;
-						
-					}
-					
-					//Limit the angle setpoint by the FILTER_RATE_LIMIT we can only test the static time, but not the dynamic 
-					if (FILTER_RATE_LIMIT < 501){
-						if(increment_of_angle > 2) increment_of_angle = 2;
-							else if (increment_of_angle < -2) increment_of_angle = -2;
-					}
-					
-					if (FILTER_RATE_LIMIT < 301){
-						if(increment_of_angle > 1) increment_of_angle = 1;
-						else if (increment_of_angle < -1) increment_of_angle = -1;
-					}
-				
-				}
-				
-//********************************************************************************************************************
 //for auto follow
-				if(DBUS_ReceiveData.rc.switch_left == 1)
+				if(DBUS_ReceiveData.rc.switch_left == 1) {
 					setpoint_angle = -direction * 3600/upperTotal;
+				}
 //********************************************************************************************************************
 //chasis turing speed limit control begins				
 				feedback_angle = output_angle;
@@ -311,6 +301,15 @@ int main(void)
 					if (gimbalPositionSetpoint < -1500) gimbalPositionSetpoint = -1500;
 				}
 //auto follow mode gimbal control ends
+//********************************************************************************************************************
+//Rune mode gimbal control
+				if (isRuneMode) {
+					gimbalPositionSetpoint = 0 + DBUS_CheckPush(KEY_D)*DBUS_CheckPush(KEY_E)*DBUS_CheckPush(KEY_C)*horiLength 
+					- DBUS_CheckPush(KEY_Q)*DBUS_CheckPush(KEY_A)*DBUS_CheckPush(KEY_Z)*horiLength;
+
+				}
+
+
 //********************************************************************************************************************
 				if(DBUS_ReceiveData.rc.switch_left == 3){
 					
