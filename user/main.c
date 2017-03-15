@@ -13,6 +13,7 @@ enum State GimbalState;
 static u32 ticks_msimg = (u32)-1;
 
 void init(){
+	InfantryJudge.LastBlood = 1500;
 	SysTick_Init();  
 	Dbus_init();//usart1
 	//buzzer_init();	 //initialization of buzzer
@@ -74,8 +75,9 @@ int32_t kp_power = 10;
 int32_t ki_power = 3;
 int32_t kd_power = 0;
 
-
+//********************************************************************************************************************
 //Gimbal yaw control (Position loop and velocity loop) 
+//setpoint control
 float gimbalPositionSetpoint = 0;// prevGimbalPositionSetpoint = 0;
 float bufferedGimbalPositionSetpoint = 0;
 float gimbalPositionFeedback= 0;
@@ -85,6 +87,30 @@ struct fpid_control_states gimbalPositionState = {0,0,0};
 float gpos_kp = 0.3;
 float gpos_ki = 0.0003;
 float gpos_kd = 2;
+
+int32_t posMultiplier = 3;		//DBUS mouse control
+
+//speed control
+struct inc_pid_states gimbalSpeedMoveState;// gimbalSpeedStaticState;
+int32_t gimbalSpeedSetpoint = 0;
+int32_t gimbalSpeedMoveOutput = 0;
+//********************************************************************************************************************
+//Pitch control
+//setpoint control
+float pitchPositionSetpoint = 0;// prevGimbalPositionSetpoint = 0;
+float bufferedPitchPositionSetpoint = 0;
+float pitchPositionFeedback= 0;
+bool isPitchPositionSetpointIncrease = true;
+
+struct fpid_control_states pitchPositionState = {0,0,0};
+//float ppos_kp = 0.3;
+//float ppos_ki = 0.0003;
+//float ppos_kd = 2;
+
+//speed control
+struct inc_pid_states pitchSpeedMoveState;// gimbalSpeedStaticState;
+int32_t pitchSpeedSetpoint = 0;
+int32_t pitchSpeedMoveOutput = 0;
 
 //********************************************************************************************************************
 
@@ -100,9 +126,7 @@ float gimbalNotOutGyroOutput=0;
 bool locked=false;   //for key F
 //********************************************************************************************************************
 
-struct inc_pid_states gimbalSpeedMoveState;// gimbalSpeedStaticState;
-int32_t gimbalSpeedSetpoint = 0;
-int32_t gimbalSpeedMoveOutput = 0;// gimbalSpeedStaticOutput = 0;
+
 
 
 //The coorperation of gimbal and the chasis
@@ -118,7 +142,8 @@ int32_t isRuneMode = 0;
 
 int32_t horiLength = 300;
 //Still not using until pitch is done
-int32_t vertiLength = 0;
+int32_t vertiUp = 300;
+int32_t vertiDown = 300;
 int32_t vertiCenter = 0;
 
 int32_t currentLeft = 0;
@@ -127,6 +152,7 @@ int32_t lastLeft = 0;
 int main(void)
 {	
 	init();
+	DBUS_ReceiveData.mouse.ytotal=0;
 	
 	//init the buffers with zero 
 	for (int i =0 ; i<4 ; i++){
@@ -136,13 +162,11 @@ int main(void)
 	}
 	
 	incPIDinit(&gimbalSpeedMoveState);
-	//incPIDinit(&gimbalPositionState);
-	//incPIDinit(&gimbalSpeedStaticState);
+	incPIDinit(&pitchSpeedMoveState);
 
-	
 	incPIDset(&gimbalSpeedMoveState, 70,3.7,0);
-	//incPIDset(&gimbalSpeedStaticState, 80.0, 7, 100);
-	//incPIDsetpoint(&gimbalSpeedStaticState, 0);
+	incPIDset(&pitchSpeedMoveState, 70,3.7,0);
+
 	mouse_prev=DBUS_ReceiveData.mouse.xtotal;
 	while (1)  {	
 
@@ -215,21 +239,21 @@ int main(void)
 				}
 				if(DBUS_ReceiveData.rc.switch_left == 3 && !isRuneMode )		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
 				{
-					int32_t posMultipier = 3;
+					
 					setpoint_angle += increment_of_angle;
-					if(DBUS_ReceiveData.mouse.xtotal*posMultipier<1500 && DBUS_ReceiveData.mouse.xtotal*posMultipier>-1500 && !DBUS_CheckPush(KEY_F))
+					if(DBUS_ReceiveData.mouse.xtotal*posMultiplier<1500 && DBUS_ReceiveData.mouse.xtotal*posMultiplier>-1500 && !DBUS_CheckPush(KEY_F))
 						gimbalNotOutGyroOutput=output_angle;
-					if(DBUS_ReceiveData.mouse.xtotal*posMultipier>=1500){
+					if(DBUS_ReceiveData.mouse.xtotal*posMultiplier>=1500){
 						gimbalPositionSetpoint=-1500;
 						if(!locked)
 							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/10;
-						DBUS_ReceiveData.mouse.xtotal=1500/posMultipier;
-					}else if(DBUS_ReceiveData.mouse.xtotal*posMultipier<=-1500){
+						DBUS_ReceiveData.mouse.xtotal=1500/posMultiplier;
+					}else if(DBUS_ReceiveData.mouse.xtotal*posMultiplier<=-1500){
 						gimbalPositionSetpoint=1500;
 						if(!locked)
 							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/10;
-						DBUS_ReceiveData.mouse.xtotal=-1500/posMultipier	;
-					} else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal*posMultipier;
+						DBUS_ReceiveData.mouse.xtotal=-1500/posMultiplier	;
+					} else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal*posMultiplier;
 				
 					if( DBUS_CheckPush(KEY_F))		//calibrating
 					{
@@ -317,8 +341,9 @@ int main(void)
 //********************************************************************************************************************
 //Rune mode gimbal control
 				if (isRuneMode) {
-					gimbalPositionSetpoint = 0 + DBUS_CheckPush(KEY_D)*DBUS_CheckPush(KEY_E)*DBUS_CheckPush(KEY_C)*horiLength 
-					- DBUS_CheckPush(KEY_Q)*DBUS_CheckPush(KEY_A)*DBUS_CheckPush(KEY_Z)*horiLength;
+					gimbalPositionSetpoint = 0 + (DBUS_CheckPush(KEY_D)+DBUS_CheckPush(KEY_E)+DBUS_CheckPush(KEY_C))*horiLength 
+					- (DBUS_CheckPush(KEY_Q)+DBUS_CheckPush(KEY_A)+DBUS_CheckPush(KEY_Z))*horiLength;
+					pitchPositionSetpoint =-( vertiDown - (DBUS_CheckPush(KEY_Z)+DBUS_CheckPush(KEY_))   )
 
 				}
 
@@ -341,19 +366,43 @@ int main(void)
 							bufferedGimbalPositionSetpoint = gimbalPositionSetpoint;
 					}
 					
-					//incPIDsetpoint(&gimbalPositionState, bufferedGimbalPositionSetpoint);
-					//gimbalSpeedSetpoint += incPIDcalc(&gimbalPositionState, (int32_t)(GMYawEncoder.ecd_angle));
-					
+									
 				}
 //********************************************************************************************************************
-
+//pitch setpoint control
+				//limit pitch position
+				if(DBUS_ReceiveData.mouse.ytotal>750) DBUS_ReceiveData.mouse.ytotal=750;
+				else if(DBUS_ReceiveData.mouse.ytotal<0) DBUS_ReceiveData.mouse.ytotal=0;
+				//pitch setpoint
+				pitchPositionSetpoint=-DBUS_ReceiveData.mouse.ytotal;
+				if(bufferedPitchPositionSetpoint < pitchPositionSetpoint) isPitchPositionSetpointIncrease = true;
+				else isPitchPositionSetpointIncrease = false;
+				if(isPitchPositionSetpointIncrease)
+					bufferedPitchPositionSetpoint+=70;
+					if (bufferedPitchPositionSetpoint > pitchPositionSetpoint)
+					bufferedPitchPositionSetpoint = pitchPositionSetpoint;
+				}
+				else {
+					bufferedPitchPositionSetpoint-=70;
+					if(bufferedPitchPositionSetpoint < pitchPositionSetpoint) 
+						bufferedPitchPositionSetpoint = pitchPositionSetpoint;
+				}
+//********************************************************************************************************************				
+//Yaw and Pitch speed control 				
+				
 				gimbalPositionFeedback = GMYawEncoder.ecd_angle;
 				gimbalSpeedSetpoint = (int32_t)fpid_process(&gimbalPositionState, &gimbalPositionSetpoint, &gimbalPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
+
+				pitchPositionFeedback = GMPitchEncoder.ecd_angle;
+				pitchSpeedSetpoint = (int32_t)fpid_process(&pitchPositionState, &pitchPositionSetpoint, &pitchPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
 
 
 				//Limit the output
 				if (gimbalSpeedSetpoint > 500) gimbalSpeedSetpoint = 500;
 				else if (gimbalSpeedSetpoint < -500) gimbalSpeedSetpoint = -500;
+				
+				if (pitchSpeedSetpoint > 500) pitchSpeedSetpoint = 500;
+				else if (pitchSpeedSetpoint < -500) pitchSpeedSetpoint = -500;
 					
 				//mock speed here
 				//gimbalSpeedSetpoint = DBUS_ReceiveData.rc.ch2 * 0.5;
@@ -361,15 +410,21 @@ int main(void)
 
 				incPIDsetpoint(&gimbalSpeedMoveState, gimbalSpeedSetpoint);
 				gimbalSpeedMoveOutput+=incPIDcalc(&gimbalSpeedMoveState, GMYawEncoder.filter_rate);
+				
+				incPIDsetpoint(&pitchSpeedMoveState, pitchSpeedSetpoint);
+				pitchSpeedMoveOutput+=incPIDcalc(&pitchSpeedMoveState, GMPitchEncoder.filter_rate);
 
-				//Print gimbal Yaw	
+//********************************************************************************************************************	
+				//Print gimbal Yaw and Pitch
 			  if(ticks_msimg%20==0){	
 					for (int j=2;j<12;j++) tft_clear_line(j);
 					tft_prints(1,2,"pos_set= %.1f",gimbalPositionSetpoint);
-					tft_prints(1,3,"D= %d", direction);
-					tft_prints(1,4,"RA= %d", feedback_angle);
-					tft_prints(1,5,"chasis_sp= %.1f",setpoint_angle);
-
+					tft_prints(1,3,"pos_set= %.1f",pitchPositionSetpoint);
+					tft_prints(1,4,"D= %d", direction);
+					tft_prints(1,5,"RA= %d", feedback_angle);
+					tft_prints(1,6,"chasis_sp= %.1f",setpoint_angle);
+					//tft_prints(1,7,"%.1f",GMPitchEncoder.ecd_angle);
+					tft_prints(1,7,"%d",CM1Encoder.filter_rate);
 					tft_prints(1,8,"mouse.xt=%d",DBUS_ReceiveData.mouse.xtotal);
 					tft_prints(1,9,"mouse.yt=%d",DBUS_ReceiveData.mouse.ytotal);
 					//tft_prints(1,10,"mouse.z=%d",DBUS_ReceiveData.mouse.z);
@@ -379,7 +434,7 @@ int main(void)
 
 				//call the acturater function
 
-		  	Set_CM_Speed(CAN1, gimbalSpeedMoveOutput,0,0,0);						 
+		  	Set_CM_Speed(CAN1, gimbalSpeedMoveOutput,pitchSpeedMoveOutput,0,0);						 
 				Set_CM_Speed(CAN2, wheel_outputs[0], wheel_outputs[1], wheel_outputs[2], wheel_outputs[3]);
 			}	
 			
@@ -430,6 +485,3 @@ int main(void)
 }	//main
 
 	
-
-
-
