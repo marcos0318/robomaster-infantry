@@ -2,7 +2,7 @@
 #include "function_list.h"
 
 
-#define BUFFER_LENGTH 400
+#define BUFFER_LENGTH 600
 #define POWER_BUFFER_LENGTH 20
 #define ANGLE_PID_LIMIT 500
 #define MOVING_BOUND_1 200
@@ -101,6 +101,7 @@ float pitchPositionSetpoint = 0;// prevGimbalPositionSetpoint = 0;
 float bufferedPitchPositionSetpoint = 0;
 float pitchPositionFeedback= 0;
 bool isPitchPositionSetpointIncrease = true;
+int32_t storedPitch = 0;
 
 struct fpid_control_states pitchPositionState = {0,0,0};
 //float ppos_kp = 0.3;
@@ -137,14 +138,13 @@ int32_t upperTotal = 6400;
 
 //The rune mode
 int32_t isRuneMode = 0;
-
+int32_t lastIsRuneMode = 0;
 
 
 int32_t horiLength = 300;
 //Still not using until pitch is done
 int32_t vertiUp = 300;
 int32_t vertiDown = 300;
-int32_t vertiCenter = 0;
 
 int32_t currentLeft = 0;
 int32_t lastLeft = 0;
@@ -168,7 +168,8 @@ int main(void)
 	incPIDset(&pitchSpeedMoveState, 70,3.7,0);
 
 	mouse_prev=DBUS_ReceiveData.mouse.xtotal;
-	while (1)  {	
+	while (1)  
+	{	
 
 
 		if (ticks_msimg != get_ms_ticks()) 
@@ -181,7 +182,11 @@ int main(void)
 				DBUS_ReceiveData.mouse.xtotal = 0;
 				output_angle = 0;
 				direction = 0;
-
+				/*
+				if (lastLeft == 3 && currentLeft == 1) {
+					DBUS_ReceiveData.mouse.xtotal = output_angle * upperTotal/3600 /5;
+				}
+				*/
 			}
 
 			if (DBUS_ReceiveData.rc.switch_left == 1||DBUS_ReceiveData.rc.switch_left == 3) { 
@@ -216,6 +221,7 @@ int main(void)
 
 //Check whether is in Rune mode
 				isRuneMode = DBUS_CheckPush(KEY_V);
+				lastIsRuneMode = isRuneMode;
 					
 //********************************************************************************************************************
 //DBUS data analyze begins
@@ -341,10 +347,24 @@ int main(void)
 //********************************************************************************************************************
 //Rune mode gimbal control
 				if (isRuneMode) {
-					gimbalPositionSetpoint = 0 + (DBUS_CheckPush(KEY_D)+DBUS_CheckPush(KEY_E)+DBUS_CheckPush(KEY_C))*horiLength 
-					- (DBUS_CheckPush(KEY_Q)+DBUS_CheckPush(KEY_A)+DBUS_CheckPush(KEY_Z))*horiLength;
-					pitchPositionSetpoint =-( vertiDown - (DBUS_CheckPush(KEY_Z)+DBUS_CheckPush(KEY_))   )
+					if (!lastIsRuneMode) {
+						storedPitch = pitchPositionSetpoint;
+					}
 
+					int32_t isRight = DBUS_CheckPush(KEY_D)+DBUS_CheckPush(KEY_E)+DBUS_CheckPush(KEY_C);
+					if (isRight > 1) isRight = 1; 
+
+					int32_t isLeft = DBUS_CheckPush(KEY_Q)+DBUS_CheckPush(KEY_A)+DBUS_CheckPush(KEY_Z); 
+					if (isLeft > 1) isLeft = 1; 
+
+					int32_t isUp = DBUS_CheckPush(KEY_Q)+DBUS_CheckPush(KEY_W)+DBUS_CheckPush(KEY_E);
+					if (isUp > 1) isUp = 1;
+
+					int32_t isDown = DBUS_CheckPush(KEY_Z)+DBUS_CheckPush(KEY_X)+DBUS_CheckPush(KEY_C);
+					if (isDown > 1) isDown = 1;
+
+					gimbalPositionSetpoint = 0 + isRight*horiLength - isLeft*horiLength;
+					pitchPositionSetpoint = storedPitch - isDown*vertiDown + isUp*vertiUp;
 				}
 
 
@@ -371,13 +391,13 @@ int main(void)
 //********************************************************************************************************************
 //pitch setpoint control
 				//limit pitch position
-				if(DBUS_ReceiveData.mouse.ytotal>750) DBUS_ReceiveData.mouse.ytotal=750;
-				else if(DBUS_ReceiveData.mouse.ytotal<0) DBUS_ReceiveData.mouse.ytotal=0;
+				if(DBUS_ReceiveData.mouse.ytotal>0) DBUS_ReceiveData.mouse.ytotal=0;
+				else if(DBUS_ReceiveData.mouse.ytotal<-750) DBUS_ReceiveData.mouse.ytotal=-750;
 				//pitch setpoint
 				pitchPositionSetpoint=-DBUS_ReceiveData.mouse.ytotal;
 				if(bufferedPitchPositionSetpoint < pitchPositionSetpoint) isPitchPositionSetpointIncrease = true;
 				else isPitchPositionSetpointIncrease = false;
-				if(isPitchPositionSetpointIncrease)
+				if(isPitchPositionSetpointIncrease) {
 					bufferedPitchPositionSetpoint+=70;
 					if (bufferedPitchPositionSetpoint > pitchPositionSetpoint)
 					bufferedPitchPositionSetpoint = pitchPositionSetpoint;
