@@ -7,6 +7,9 @@
 #include "canBusProcess.h"
 #include "Dbus.h"
 #include "judge.h"
+#include "PID.h"
+#include "helper_functions.h"
+#include "general_control.h"
 
 //Brush Motor Functions
 void Brush_motor_pwm_dir_init(void);
@@ -61,7 +64,7 @@ void Set_CM_Speed(CAN_TypeDef *CANx, int16_t cm1_iq, int16_t cm2_iq, int16_t cm3
 if wanna get encoder feedback value of each motor, all by default from CAN2
 CM1Encoder...
 CM2Encoder...
-CM3Encdoer...
+CM3Encoder...
 CM4Encoder...
 GMYawEncoder...
 GMPitchEncoder...
@@ -110,6 +113,16 @@ void judging_system_init(void);
 get the information from here you can dot dot dot
 InfantryJudge...
 */
+
+//generic pid control
+
+
+
+
+
+
+
+
 
 
 

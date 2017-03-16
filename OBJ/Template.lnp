@@ -1,4 +1,4 @@
---cpu Cortex-M4.fp
+--cpu=Cortex-M4.fp
 "..\obj\stm32f4xx_it.o"
 "..\obj\main.o"
 "..\obj\system_stm32f4xx.o"
@@ -36,8 +36,9 @@
 "..\obj\dbus.o"
 "..\obj\judge.o"
 "..\obj\data_monitor.o"
-"..\obj\driver_encoder.o"
-"..\obj\driver_gun.o"
+"..\obj\pid.o"
+"..\obj\helper_functions.o"
+"..\obj\general_control.o"
 --strict --scatter "..\OBJ\Template.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

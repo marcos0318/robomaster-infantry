@@ -70,8 +70,7 @@ void Dbus_init(void){
 }
 
 /**
-  * @brief  DBUSÊý¾Ý½âÂë
-  * @param  void
+  * @brief  DBUSï¿½ï¿½ï¿½  * @param  void
   * @retval void
   */
 void DBUS_DataDecoding(void)
@@ -95,9 +94,14 @@ void DBUS_DataDecoding(void)
 	DBUS_ReceiveData.mouse.y = DBUSBuffer[8] | (DBUSBuffer[9] << 8);
 	DBUS_ReceiveData.mouse.z = DBUSBuffer[10]| (DBUSBuffer[11] << 8);
 	
-	DBUS_ReceiveData.mouse.x_position += DBUS_ReceiveData.mouse.x;
-	DBUS_ReceiveData.mouse.y_position += DBUS_ReceiveData.mouse.y;
 	
+	
+  DBUS_ReceiveData.mouse.xtotal += DBUS_ReceiveData.mouse.x;  //x axis
+  DBUS_ReceiveData.mouse.ytotal += DBUS_ReceiveData.mouse.y;
+  DBUS_ReceiveData.mouse.ztotal += DBUS_ReceiveData.mouse.z;
+  
+  //if(DBUS_ReceiveData.mouse.xtotal>2000) DBUS_ReceiveData.mouse.xtotal=2000;
+  //if(DBUS_ReceiveData.mouse.xtotal<-2000) DBUS_ReceiveData.mouse.xtotal=-2000;
 	DBUS_ReceiveData.mouse.press_left 	= DBUSBuffer[12];	// is pressed?
 	DBUS_ReceiveData.mouse.press_right 	= DBUSBuffer[13];
 	
@@ -107,7 +111,7 @@ void DBUS_DataDecoding(void)
 	DBUS_ReceiveData.keyBoard.key_code 	= DBUSBuffer[14] | DBUSBuffer[15] << 8; //key board code
 	//if you wanna use keyboard and mouse, you need to run specific sw that provided by RM.
 	/**********************************************************************************
-   * ¼üÅÌÍ¨µÀ:15   14   13   12   11   10   9   8   7   6     5     4   3   2   1
+   * ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½:15   14   13   12   11   10   9   8   7   6     5     4   3   2   1
    *          V    C    X	  Z    G    F    R   E   Q  CTRL  SHIFT  D   A   S   W
 ************************************************************************************/
     GUN_SetMotion();
@@ -115,9 +119,9 @@ void DBUS_DataDecoding(void)
 
 
 /**
-  * @brief  ÅÐ¶ÏÒ»¸ö¼üÊÇ·ñ±»°´ÏÂ
-  * @param  Òª½øÐÐÅÐ¶ÏµÄ°´¼ü£¬×Ö·û´óÐ´
-  * @retval 1 °´ÏÂ        0 Î´°´ÏÂ
+  * @brief  ï¿½Ð¶ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ñ±»°ï¿½ï¿½ï¿½
+  * @param  Òªï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ÏµÄ°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö·ï¿½ï¿½ï¿½Ð´
+  * @retval 1 ï¿½ï¿½ï¿½ï¿½        0 Î´ï¿½ï¿½ï¿½ï¿½
 	*				1 push 0 not push
   */
 
@@ -134,11 +138,11 @@ uint8_t DBUS_CheckPush(uint16_t Key)
 }
 
 
-//ÓÃÓÚÇå¿Õ´®¿Ú±êÖ¾Î»µÄÁÙÊ±±äÁ¿
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ´ï¿½ï¿½Ú±ï¿½Ö¾Î»ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½
 uint8_t UARTtemp;
 
 /**
-  * @brief  DBUS¿ÕÏÐÖÐ¶Ï(USART1)
+  * @brief  DBUSï¿½ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½(USART1)
   * @param  void
   * @retval void
   */
@@ -155,7 +159,7 @@ void USART1_IRQHandler(void)
 					DBUS_DataDecoding();
 			}
 			
-			//ÖØÆôDMA
+			//ï¿½ï¿½ï¿½ï¿½DMA
 			DMA_ClearFlag(DMA2_Stream5, DMA_FLAG_TCIF5 | DMA_FLAG_HTIF5);
 			while(DMA_GetCmdStatus(DMA2_Stream5) != DISABLE);
 			DMA_SetCurrDataCounter(DMA2_Stream5, DBUSLength + DBUSBackLength);

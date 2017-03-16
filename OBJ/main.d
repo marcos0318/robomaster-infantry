@@ -1,14 +1,14 @@
 ..\obj\main.o: main.c
 ..\obj\main.o: main.h
-..\obj\main.o: Z:\Users\Thomas\Documents\Keil\ARM\ARMCC\bin\..\include\stdio.h
-..\obj\main.o: Z:\Users\Thomas\Documents\Keil\ARM\ARMCC\bin\..\include\stdlib.h
-..\obj\main.o: Z:\Users\Thomas\Documents\Keil\ARM\ARMCC\bin\..\include\stdbool.h
-..\obj\main.o: Z:\Users\Thomas\Documents\Keil\ARM\ARMCC\bin\..\include\math.h
+..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdbool.h
+..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\math.h
 ..\obj\main.o: yaw_gyro.h
 ..\obj\main.o: ticks.h
 ..\obj\main.o: stm32f4xx.h
 ..\obj\main.o: ..\CORE\core_cm4.h
-..\obj\main.o: Z:\Users\Thomas\Documents\Keil\ARM\ARMCC\bin\..\include\stdint.h
+..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 ..\obj\main.o: ..\CORE\core_cmInstr.h
 ..\obj\main.o: ..\CORE\core_cmFunc.h
 ..\obj\main.o: ..\CORE\core_cmSimd.h
@@ -53,14 +53,12 @@
 ..\obj\main.o: 1.8 TFT_display.h
 ..\obj\main.o: 1.8 TFT_ascii.h
 ..\obj\main.o: led.h
-..\obj\main.o: Z:\Users\Thomas\Documents\Keil\ARM\ARMCC\bin\..\include\stdarg.h
+..\obj\main.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 ..\obj\main.o: ticks.h
 ..\obj\main.o: encoder.h
 ..\obj\main.o: data_monitor.h
 ..\obj\main.o: adc.h
 ..\obj\main.o: ..\CORE\core_cm4.h
-..\obj\main.o: Driver_Gun.h
-..\obj\main.o: Driver_Encoder.h
 ..\obj\main.o: function_list.h
 ..\obj\main.o: pwm.h
 ..\obj\main.o: led.h
@@ -70,3 +68,6 @@
 ..\obj\main.o: canBusProcess.h
 ..\obj\main.o: Dbus.h
 ..\obj\main.o: judge.h
+..\obj\main.o: PID.h
+..\obj\main.o: helper_functions.h
+..\obj\main.o: general_control.h

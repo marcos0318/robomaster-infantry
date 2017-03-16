@@ -2,6 +2,15 @@
 #include "function_list.h"
 
 volatile u32 ticks_msimg = (u32)-1;
+#define BUFFER_LENGTH 600
+#define POWER_BUFFER_LENGTH 20
+#define ANGLE_PID_LIMIT 500
+#define MOVING_BOUND_1 200
+#define MOVING_BOUND_2 450
+enum State{StaticState,MovingState};
+bool SetpointStatic=false;
+enum State GimbalState;
+static u32 ticks_msimg = (u32)-1;
 
 void init(){
 	SysTick_Init();  

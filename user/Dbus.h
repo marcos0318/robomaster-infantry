@@ -20,11 +20,11 @@
 #define KEY_W		0x0001
 
 
-#define DBUSLength		18				//DBUSÊý¾ÝÖ¡³¤
-#define DBUSBackLength	1				//Ôö¼ÓÒ»¸ö×Ö½Ú±£³ÖÎÈ¶¨
+#define DBUSLength		18				//DBUSï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½
+#define DBUSBackLength	1				//ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ö½Ú±ï¿½ï¿½ï¿½ï¿½È¶ï¿½
 
 
-//Ò£¿Ø½âÂëÊý¾Ý´æ´¢½á¹¹Ìå
+//Ò£ï¿½Ø½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý´æ´¢ï¿½á¹¹ï¿½ï¿½
 typedef struct {
 	
 	u8 connected;
@@ -45,6 +45,9 @@ typedef struct {
 		int16_t x;
 		int16_t y;
 		int16_t z;
+		int32_t xtotal;
+		int32_t ytotal;
+		int32_t ztotal;
 	
 		uint8_t press_left;
 		uint8_t press_right;
@@ -57,10 +60,10 @@ typedef struct {
 	struct 
 	{
 /**********************************************************************************
-   * ¼üÅÌÍ¨µÀ:15   14   13   12   11   10   9   8   7   6     5     4   3   2   1
+   * ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½:15   14   13   12   11   10   9   8   7   6     5     4   3   2   1
    *          V    C    X	  Z    G    F    R   E   Q  CTRL  SHIFT  D   A   S   W
 ************************************************************************************/
-		uint16_t key_code;              //Ô­Ê¼¼üÖµ
+		uint16_t key_code;              //Ô­Ê¼ï¿½ï¿½Öµ
 	}keyBoard;
 }DBUSDecoding_Type;
 
