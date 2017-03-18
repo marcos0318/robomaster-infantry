@@ -28,7 +28,6 @@
 "..\obj\flash.o"
 "..\obj\yaw_gyro.o"
 "..\obj\adc.o"
-"..\obj\encoder.o"
 "..\obj\pneumatic.o"
 "..\obj\can1.o"
 "..\obj\can2.o"
@@ -39,6 +38,8 @@
 "..\obj\pid.o"
 "..\obj\helper_functions.o"
 "..\obj\general_control.o"
+"..\obj\driver_encoder.o"
+"..\obj\driver_gun.o"
 --strict --scatter "..\OBJ\Template.sct"
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols
 --info sizes --info totals --info unused --info veneers

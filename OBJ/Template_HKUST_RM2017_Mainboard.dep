@@ -40,8 +40,8 @@ I (ticks.h)(0x55E556EA)
 I (buzzer.h)(0x5846B8B2)
 I (gpio.h)(0x57B42B6C)
 I (timer.h)(0x55E556EA)
-F (.\main.c)(0x58CA78C3)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
-I (main.h)(0x5898717A)
+F (.\main.c)(0x58CA92D0)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\main.o --omf_browse ..\obj\main.crf --depend ..\obj\main.d)
+I (main.h)(0x58CA870E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F606B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F606B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x57F606B8)
@@ -95,6 +95,8 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F606B8)
 I (encoder.h)(0x58485226)
 I (data_monitor.h)(0x58712230)
 I (adc.h)(0x5846BC24)
+I (Driver_Gun.h)(0x58C7E606)
+I (Driver_Encoder.h)(0x58C7F3A0)
 I (function_list.h)(0x58BFAF28)
 I (pneumatic.h)(0x5846C81C)
 I (canBusProcess.h)(0x58958398)
@@ -1080,43 +1082,6 @@ I (ticks.h)(0x55E556EA)
 I (buzzer_song.h)(0x580114C8)
 I (buzzer.h)(0x5846B8B2)
 I (timer.h)(0x55E556EA)
-F (.\encoder.c)(0x58485206)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\encoder.o --omf_browse ..\obj\encoder.crf --depend ..\obj\encoder.d)
-I (encoder.h)(0x58485226)
-I (stm32f4xx.h)(0x55E556EA)
-I (..\CORE\core_cm4.h)(0x55E556E8)
-I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
-I (..\CORE\core_cmInstr.h)(0x55E556E8)
-I (..\CORE\core_cmFunc.h)(0x55E556E8)
-I (..\CORE\core_cmSimd.h)(0x55E556E8)
-I (system_stm32f4xx.h)(0x55E556EA)
-I (stm32f4xx_conf.h)(0x55E556EA)
-I (..\FWLIB\inc\stm32f4xx_adc.h)(0x55E556E8)
-I (..\USER\stm32f4xx.h)(0x55E556EA)
-I (..\FWLIB\inc\stm32f4xx_crc.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_dbgmcu.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_dma.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_exti.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_flash.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_gpio.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_i2c.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_iwdg.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_pwr.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_rcc.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_rtc.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_sdio.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_spi.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_syscfg.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_tim.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_usart.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_wwdg.h)(0x55E556E8)
-I (..\FWLIB\inc\misc.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_cryp.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_hash.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_rng.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_can.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_dac.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x55E556E8)
-I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x55E556E8)
 F (.\pneumatic.c)(0x5846C7EE)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\pneumatic.o --omf_browse ..\obj\pneumatic.crf --depend ..\obj\pneumatic.d)
 I (pneumatic.h)(0x5846C81C)
 I (gpio.h)(0x57B42B6C)
@@ -1345,7 +1310,7 @@ I (..\FWLIB\inc\stm32f4xx_can.h)(0x55E556E8)
 I (..\FWLIB\inc\stm32f4xx_dac.h)(0x55E556E8)
 I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x55E556E8)
 I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x55E556E8)
-I (main.h)(0x5898717A)
+I (main.h)(0x58CA870E)
 I (C:\Keil_v5\ARM\ARMCC\include\stdio.h)(0x57F606B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdlib.h)(0x57F606B8)
 I (C:\Keil_v5\ARM\ARMCC\include\stdbool.h)(0x57F606B8)
@@ -1364,6 +1329,8 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdarg.h)(0x57F606B8)
 I (encoder.h)(0x58485226)
 I (data_monitor.h)(0x58712230)
 I (adc.h)(0x5846BC24)
+I (Driver_Gun.h)(0x58C7E606)
+I (Driver_Encoder.h)(0x58C7F3A0)
 F (.\data_monitor.c)(0x58711F6A)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\data_monitor.o --omf_browse ..\obj\data_monitor.crf --depend ..\obj\data_monitor.d)
 I (data_monitor.h)(0x58712230)
 I (stm32f4xx.h)(0x55E556EA)
@@ -1411,3 +1378,80 @@ I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
 F (.\general_control.c)(0x58BFB06D)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\general_control.o --omf_browse ..\obj\general_control.crf --depend ..\obj\general_control.d)
 I (general_control.h)(0x58BFB674)
 I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
+F (.\Driver_Encoder.c)(0x58A5AF50)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\driver_encoder.o --omf_browse ..\obj\driver_encoder.crf --depend ..\obj\driver_encoder.d)
+I (Driver_Encoder.h)(0x58C7F3A0)
+I (stm32f4xx.h)(0x55E556EA)
+I (..\CORE\core_cm4.h)(0x55E556E8)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
+I (..\CORE\core_cmInstr.h)(0x55E556E8)
+I (..\CORE\core_cmFunc.h)(0x55E556E8)
+I (..\CORE\core_cmSimd.h)(0x55E556E8)
+I (system_stm32f4xx.h)(0x55E556EA)
+I (stm32f4xx_conf.h)(0x55E556EA)
+I (..\FWLIB\inc\stm32f4xx_adc.h)(0x55E556E8)
+I (..\USER\stm32f4xx.h)(0x55E556EA)
+I (..\FWLIB\inc\stm32f4xx_crc.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_dbgmcu.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_dma.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_exti.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_flash.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_gpio.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_i2c.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_iwdg.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_pwr.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_rcc.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_rtc.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_sdio.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_spi.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_syscfg.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_tim.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_usart.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_wwdg.h)(0x55E556E8)
+I (..\FWLIB\inc\misc.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_cryp.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_hash.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_rng.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_can.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_dac.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x55E556E8)
+F (.\Driver_Gun.c)(0x58CA8EFA)(--c99 -c --cpu Cortex-M4.fp -g -O0 --apcs=interwork -I ..\CORE -I ..\SYSTEM\delay -I ..\SYSTEM\sys -I ..\SYSTEM\usart -I ..\USER -I ..\FWLIB\inc-IC:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include-IC:\Keil_v5\ARM\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Device\Include-D__UVISION_VERSION="522" -DSTM32F407xx -DSTM32F40_41xxx -DUSE_STDPERIPH_DRIVER-o ..\obj\driver_gun.o --omf_browse ..\obj\driver_gun.crf --depend ..\obj\driver_gun.d)
+I (Dbus.h)(0x58CA85CB)
+I (stm32f4xx.h)(0x55E556EA)
+I (..\CORE\core_cm4.h)(0x55E556E8)
+I (C:\Keil_v5\ARM\ARMCC\include\stdint.h)(0x57F606B8)
+I (..\CORE\core_cmInstr.h)(0x55E556E8)
+I (..\CORE\core_cmFunc.h)(0x55E556E8)
+I (..\CORE\core_cmSimd.h)(0x55E556E8)
+I (system_stm32f4xx.h)(0x55E556EA)
+I (stm32f4xx_conf.h)(0x55E556EA)
+I (..\FWLIB\inc\stm32f4xx_adc.h)(0x55E556E8)
+I (..\USER\stm32f4xx.h)(0x55E556EA)
+I (..\FWLIB\inc\stm32f4xx_crc.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_dbgmcu.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_dma.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_exti.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_flash.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_gpio.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_i2c.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_iwdg.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_pwr.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_rcc.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_rtc.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_sdio.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_spi.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_syscfg.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_tim.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_usart.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_wwdg.h)(0x55E556E8)
+I (..\FWLIB\inc\misc.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_cryp.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_hash.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_rng.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_can.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_dac.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_dcmi.h)(0x55E556E8)
+I (..\FWLIB\inc\stm32f4xx_fsmc.h)(0x55E556E8)
+I (Driver_Encoder.h)(0x58C7F3A0)
+I (Driver_Gun.h)(0x58C7E606)
+I (C:\Keil_v5\ARM\ARMCC\include\string.h)(0x57F606B8)

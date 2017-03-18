@@ -36,13 +36,6 @@ void init(){
 
 
 
-
-
-
-
-
-
-
 int32_t buffer[4][BUFFER_LENGTH];
 
 //PID controls
@@ -482,7 +475,8 @@ int main(void)
 				Set_CM_Speed(CAN1, 0, 0, 0, 0);
 				Set_CM_Speed(CAN2, 0, 0, 0, 0);
 			}		
-			
+			if (ticks_msimg % 20 == 0)
+				GUN_PokeControl();
 				
 			
 			/*

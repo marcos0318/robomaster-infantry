@@ -565,11 +565,6 @@
               <FilePath>.\adc.c</FilePath>
             </File>
             <File>
-              <FileName>encoder.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\encoder.c</FilePath>
-            </File>
-            <File>
               <FileName>pneumatic.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\pneumatic.c</FilePath>
@@ -618,6 +613,16 @@
               <FileName>general_control.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\general_control.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driver_Encoder.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver_Encoder.c</FilePath>
+            </File>
+            <File>
+              <FileName>Driver_Gun.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\Driver_Gun.c</FilePath>
             </File>
           </Files>
         </Group>
