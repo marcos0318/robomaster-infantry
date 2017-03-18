@@ -2,7 +2,7 @@
 #include "function_list.h"
 
 volatile u32 ticks_msimg = (u32)-1;
-#define BUFFER_LENGTH 600
+#define BUFFER_LENGTH 400
 #define POWER_BUFFER_LENGTH 20
 #define ANGLE_PID_LIMIT 500
 #define MOVING_BOUND_1 200
@@ -105,16 +105,16 @@ bool isPitchPositionSetpointIncrease = true;
 int32_t storedPitch = 0;
 
 struct fpid_control_states pitchPositionState = {0,0,0};
-float ppos_kp = 1.5;
-float ppos_ki = 0.0003;
-float ppos_kd = 1.5;
+float ppos_kp = 0.5;
+float ppos_ki = 0.00035;
+float ppos_kd = 4.5;
 
 //speed control
 struct inc_pid_states pitchSpeedMoveState;// gimbalSpeedStaticState;
 int32_t pitchSpeedSetpoint = 0;
 int32_t pitchSpeedMoveOutput = 0;
 
-int32_t pitchPosMultiplier = 2;       //DBUS mouse pitch control
+int32_t pitchPosMultiplier = 3;       //DBUS mouse pitch control
 
 //********************************************************************************************************************
 
@@ -241,11 +241,11 @@ int main(void)
 					right_speed = 0;
 				} 
 				if(DBUS_ReceiveData.rc.switch_left == 3) {	//keyboard-mouse control mode
-					increment_of_angle = (DBUS_ReceiveData.rc.ch2 + DBUS_CheckPush(KEY_Q)*660 - DBUS_CheckPush(KEY_E)*660) /angular_speed_limitor;
+					increment_of_angle = (DBUS_ReceiveData.rc.ch2 - DBUS_CheckPush(KEY_Q)*300 + DBUS_CheckPush(KEY_E)*300) /angular_speed_limitor;
 					if (isRuneMode) increment_of_angle = 0;
 				}
 				if(DBUS_ReceiveData.rc.switch_left == 1) {		//auto follow mode
-					if (!isRuneMode)direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*5 ;
+					if (!isRuneMode)direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*4 ;
 				}
 				if(DBUS_ReceiveData.rc.switch_left == 3 && !isRuneMode )		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
 				{

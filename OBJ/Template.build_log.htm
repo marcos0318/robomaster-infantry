@@ -3,38 +3,91 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Tool Versions:</h2>
-IDE-Version: µVision V5.22.0.0
-Copyright (C) 2016 ARM Ltd and ARM Germany GmbH. All rights reserved.
-License Information: Jiaxin Bai, HKUST, LIC=MPP74-FIK71-2L9CT-RIUAD-IFF8U-YWI4J
+IDE-Version: ¦ÌVision V5.23.0.0
+Copyright (C) 2017 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Jiaxin Bai, hkust, LIC=65IDY-I81R8-5TK3W-Q34EQ-AMN39-W19GU
  
 Tool Versions:
-Toolchain:       MDK-ARM Plus  Version: 5.22
+Toolchain:       MDK-ARM Plus  Version: 5.23
 Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
 C Compiler:      Armcc.exe V5.06 update 4 (build 422)
 Assembler:       Armasm.exe V5.06 update 4 (build 422)
 Linker/Locator:  ArmLink.exe V5.06 update 4 (build 422)
 Library Manager: ArmAr.exe V5.06 update 4 (build 422)
 Hex Converter:   FromElf.exe V5.06 update 4 (build 422)
-CPU DLL:         SARMCM3.DLL V5.22
-Dialog DLL:      DCM.DLL V1.13.9.0
+CPU DLL:         SARMCM3.DLL V5.23
+Dialog DLL:      DCM.DLL V1.15.0.0
 Target DLL:      STLink\ST-LINKIII-KEIL_SWO.dll V2.0.18.0
-Dialog DLL:      TCM.DLL V1.21.0.0
+Dialog DLL:      TCM.DLL V1.27.0.0
  
 <h2>Project:</h2>
-C:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\Template.uvprojx
-Project File Date:  03/08/2017
+C:\Users\baijiaxin\Documents\git\V1.3\user\Template.uvprojx
+Project File Date:  03/19/2017
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 4 (build 422)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'HKUST_RM2017_Mainboard'
-"..\OBJ\Template.axf" - 0 Error(s), 0 Warning(s).
+compiling main.c...
+led.h(7): warning:  #1295-D: Deprecated declaration LED_master_init - give arg types
+  void LED_master_init();
+pwm.h(11): warning:  #1-D: last line of file ends without a newline
+  void Friction_wheel_control2(u16 speed);
+led.h(7): warning:  #1295-D: Deprecated declaration LED_master_init - give arg types
+  void LED_master_init();
+1.8 TFT_display.h(87): warning:  #1295-D: Deprecated declaration tft_brightness_check_menu - give arg types
+  void tft_brightness_check_menu();
+adc.h(35): warning:  #1295-D: Deprecated declaration get_mcu_temperature - give arg types
+  float get_mcu_temperature();
+pwm.h(11): warning:  #1-D: last line of file ends without a newline
+  void Friction_wheel_control2(u16 speed);
+led.h(7): warning:  #1295-D: Deprecated declaration LED_master_init - give arg types
+  void LED_master_init();
+pneumatic.h(3): warning:  #1295-D: Deprecated declaration pneumatic_init - give arg types
+  void pneumatic_init();
+pneumatic.h(4): warning:  #1-D: last line of file ends without a newline
+  void pneumatic_control(u8 port, u8 state);
+can.h(4): warning:  #1295-D: Deprecated declaration CAN1_Configuration - give arg types
+  void CAN1_Configuration();
+can.h(5): warning:  #1295-D: Deprecated declaration CAN2_Configuration - give arg types
+  void CAN2_Configuration();
+judge.h(33): warning:  #1-D: last line of file ends without a newline
+  extern InfantryJudge_Struct InfantryJudge;
+PID.h(72): warning:  #1-D: last line of file ends without a newline
+  #endif
+helper_functions.h(20): warning:  #1-D: last line of file ends without a newline
+  #endif
+general_control.h(19): warning:  #1-D: last line of file ends without a newline
+  #endif
+function_list.h(28): warning:  #1295-D: Deprecated declaration LED_master_init - give arg types
+  void LED_master_init();
+function_list.h(33): warning:  #1295-D: Deprecated declaration tft_update - give arg types
+  void tft_update();
+function_list.h(34): warning:  #1295-D: Deprecated declaration tft_clear - give arg types
+  void tft_clear();
+function_list.h(54): warning:  #1295-D: Deprecated declaration pneumatic_init - give arg types
+  void pneumatic_init();
+function_list.h(58): warning:  #1295-D: Deprecated declaration CAN1_Configuration - give arg types
+  void CAN1_Configuration();
+function_list.h(59): warning:  #1295-D: Deprecated declaration CAN2_Configuration - give arg types
+  void CAN2_Configuration();
+main.c(208): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  					W = W - (Pr -PL) * 0.02;
+main.c(278): warning:  #1035-D: single-precision operand implicitly converted to double-precision
+  						setpoint_angle=output_angle-GMYawEncoder.ecd_angle/2.7;
+main.c(515): warning:  #1-D: last line of file ends without a newline
+  	
+main.c: 24 warnings, 0 errors
+linking...
+Program Size: Code=39236 RO-data=2644 RW-data=16816 ZI-data=11880  
+FromELF: creating hex file...
+"..\OBJ\Template.axf" - 0 Error(s), 24 Warning(s).
 
 <h2>Collection of Component include folders:</h2>
-  C:\Users\BaiJiaxin\git\HKUST_RM2017_Mainboard_V1.3_code\user\RTE\_HKUST_RM2017_Mainboard
-  C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.10.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
+  .\RTE\_HKUST_RM2017_Mainboard
+  C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.11.0\Drivers\CMSIS\Device\ST\STM32F4xx\Include
 
 <h2>Collection of Component Files used:</h2>
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:04
 </pre>
 </body>
 </html>
