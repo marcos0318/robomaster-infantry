@@ -88,12 +88,13 @@ float gpos_kp = 0.3;
 float gpos_ki = 0.0003;
 float gpos_kd = 2;
 
-int32_t posMultiplier = 3;		//DBUS mouse control
+int32_t yawPosMultiplier = 3;		//DBUS mouse yaw control
 
 //speed control
 struct inc_pid_states gimbalSpeedMoveState;// gimbalSpeedStaticState;
 int32_t gimbalSpeedSetpoint = 0;
 int32_t gimbalSpeedMoveOutput = 0;
+int32_t outsideLimit=1500;
 //********************************************************************************************************************
 //Pitch control
 //setpoint control
@@ -104,14 +105,16 @@ bool isPitchPositionSetpointIncrease = true;
 int32_t storedPitch = 0;
 
 struct fpid_control_states pitchPositionState = {0,0,0};
-//float ppos_kp = 0.3;
-//float ppos_ki = 0.0003;
-//float ppos_kd = 2;
+float ppos_kp = 1.5;
+float ppos_ki = 0.0003;
+float ppos_kd = 1.5;
 
 //speed control
 struct inc_pid_states pitchSpeedMoveState;// gimbalSpeedStaticState;
 int32_t pitchSpeedSetpoint = 0;
 int32_t pitchSpeedMoveOutput = 0;
+
+int32_t pitchPosMultiplier = 2;       //DBUS mouse pitch control
 
 //********************************************************************************************************************
 
@@ -125,6 +128,7 @@ int32_t increment_of_angle;
 int32_t mouse_prev=0;
 float gimbalNotOutGyroOutput=0;
 bool locked=false;   //for key F
+bool Fprev=false;
 //********************************************************************************************************************
 
 
@@ -134,7 +138,7 @@ bool locked=false;   //for key F
 //The direction is from 0 to 8192
 //The gyro of chasis is ranged from 0 to 3600, so we need converstion
 int32_t direction = 0;
-int32_t upperTotal = 6400;
+int32_t upperTotal = 4500;
 
 //The rune mode
 int32_t isRuneMode = 0;
@@ -246,34 +250,37 @@ int main(void)
 				if(DBUS_ReceiveData.rc.switch_left == 3 && !isRuneMode )		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
 				{
 					
-					setpoint_angle += increment_of_angle;
-					if(DBUS_ReceiveData.mouse.xtotal*posMultiplier<1500 && DBUS_ReceiveData.mouse.xtotal*posMultiplier>-1500 && !DBUS_CheckPush(KEY_F))
-						gimbalNotOutGyroOutput=output_angle;
-					if(DBUS_ReceiveData.mouse.xtotal*posMultiplier>=1500){
-						gimbalPositionSetpoint=-1500;
-						if(!locked)
-							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/10;
-						DBUS_ReceiveData.mouse.xtotal=1500/posMultiplier;
-					}else if(DBUS_ReceiveData.mouse.xtotal*posMultiplier<=-1500){
-						gimbalPositionSetpoint=1500;
-						if(!locked)
-							setpoint_angle+=(DBUS_ReceiveData.mouse.x)/10;
-						DBUS_ReceiveData.mouse.xtotal=-1500/posMultiplier	;
-					} else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal*posMultiplier;
-				
-					if( DBUS_CheckPush(KEY_F))		//calibrating
-					{
-						gimbalPositionSetpoint=0;
-						if(abs(output_angle-setpoint_angle)<30) locked=false;
-						if(!locked){
-							setpoint_angle=gimbalNotOutGyroOutput-GMYawEncoder.ecd_angle/2.7;
-							locked=true;
-							DBUS_ReceiveData.mouse.xtotal=0;
-						}
-					}
-					else locked=false;
 					
-					mouse_prev=DBUS_ReceiveData.mouse.xtotal;
+					setpoint_angle += increment_of_angle;
+					//if(DBUS_ReceiveData.mouse.xtotal*yawPosMultiplier<outsideLimit && DBUS_ReceiveData.mouse.xtotal*yawPosMultiplier>-outsideLimit && !DBUS_CheckPush(KEY_F))
+						//gimbalNotOutGyroOutput=output_angle;
+					
+					if(DBUS_ReceiveData.mouse.xtotal*yawPosMultiplier>=outsideLimit){
+						gimbalPositionSetpoint=-outsideLimit;
+						
+						setpoint_angle+=(DBUS_ReceiveData.mouse.x)/7;
+						DBUS_ReceiveData.mouse.xtotal=outsideLimit/yawPosMultiplier;
+					}else if(DBUS_ReceiveData.mouse.xtotal*yawPosMultiplier<=-outsideLimit){
+						gimbalPositionSetpoint=outsideLimit;
+						
+						setpoint_angle+=(DBUS_ReceiveData.mouse.x)/7;
+						DBUS_ReceiveData.mouse.xtotal=-outsideLimit/yawPosMultiplier	;
+					} else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal*yawPosMultiplier;
+					if(DBUS_CheckPush(KEY_F) && Fprev){
+						setpoint_angle+=(DBUS_ReceiveData.mouse.x)/5;
+						gimbalPositionSetpoint=0;
+					}
+					
+					if( DBUS_CheckPush(KEY_F) && !Fprev)		//calibrating
+					{
+						//start to press F
+						gimbalPositionSetpoint=0;
+						setpoint_angle=output_angle-GMYawEncoder.ecd_angle/2.7;
+						DBUS_ReceiveData.mouse.xtotal=0;
+						
+					}
+					Fprev=DBUS_CheckPush(KEY_F);
+					//mouse_prev=DBUS_ReceiveData.mouse.xtotal;
 				}
 //DBUS data analyze ends
 //********************************************************************************************************************
@@ -314,7 +321,7 @@ int main(void)
 						if(DBUS_CheckPush(KEY_CTRL))
 							wheel_setpoints[i]*=0.3;
 						else if(!DBUS_CheckPush(KEY_SHIFT))
-							wheel_setpoints[i]*=0.7;
+							wheel_setpoints[i]*=0.8;
 				}
 				
 				wheel_setpoints_adjust(&wheel_setpoints[0], &wheel_setpoints[1],&wheel_setpoints[2],&wheel_setpoints[3] ,FILTER_RATE_LIMIT );
@@ -391,10 +398,10 @@ int main(void)
 //********************************************************************************************************************
 //pitch setpoint control
 				//limit pitch position
-				if(DBUS_ReceiveData.mouse.ytotal>0) DBUS_ReceiveData.mouse.ytotal=0;
-				else if(DBUS_ReceiveData.mouse.ytotal<-750) DBUS_ReceiveData.mouse.ytotal=-750;
+				if(DBUS_ReceiveData.mouse.ytotal*pitchPosMultiplier>-120) DBUS_ReceiveData.mouse.ytotal=-120/pitchPosMultiplier;
+				else if(DBUS_ReceiveData.mouse.ytotal*pitchPosMultiplier<-950) DBUS_ReceiveData.mouse.ytotal=-950/pitchPosMultiplier;
 				//pitch setpoint
-				pitchPositionSetpoint=-DBUS_ReceiveData.mouse.ytotal;
+				pitchPositionSetpoint=-DBUS_ReceiveData.mouse.ytotal*pitchPosMultiplier;
 				if(bufferedPitchPositionSetpoint < pitchPositionSetpoint) isPitchPositionSetpointIncrease = true;
 				else isPitchPositionSetpointIncrease = false;
 				if(isPitchPositionSetpointIncrease) {
@@ -414,7 +421,7 @@ int main(void)
 				gimbalSpeedSetpoint = (int32_t)fpid_process(&gimbalPositionState, &gimbalPositionSetpoint, &gimbalPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
 
 				pitchPositionFeedback = GMPitchEncoder.ecd_angle;
-				pitchSpeedSetpoint = (int32_t)fpid_process(&pitchPositionState, &pitchPositionSetpoint, &pitchPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
+				pitchSpeedSetpoint = (int32_t)fpid_process(&pitchPositionState, &pitchPositionSetpoint, &pitchPositionFeedback,ppos_kp,ppos_ki,ppos_kd );
 
 
 				//Limit the output
