@@ -15,6 +15,15 @@ int16_t pid_process( struct pid_control_states* states, int32_t* setpoint, int32
 	return output;
 	
 }	
+void pidLimitI (struct pid_control_states* states, int limit) {
+	if (states->cummulated_error > limit) states->cummulated_error = limit;
+	if (states->cummulated_error < -limit) states->cummulated_error = -limit;
+}
+
+void fpidLimitI (struct fpid_control_states* states, float limit ) {
+	if (states->cummulated_error > limit) states->cummulated_error = limit;
+	if (states->cummulated_error < -limit) states->cummulated_error = -limit;
+}
 
 float fpid_process( struct fpid_control_states* states, float* setpoint, float* feedback, float kp, float ki, float kd){
 
@@ -70,6 +79,8 @@ void incPIDset(struct inc_pid_states * states_ptr, float kp, float ki, float kd)
 float incPIDcalc (struct inc_pid_states * state_ptr, signed int nextpoint) {
 	int iError;
 	float iincpid;
+	//state_ptr->sum_error*=0.9;
+	state_ptr->sum_error+=iError;
 	iError = state_ptr->setpoint - nextpoint;
 	//calculate the result 
 	iincpid = 

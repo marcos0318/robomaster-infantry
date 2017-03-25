@@ -2,6 +2,7 @@
 #define DRIVER_GUN
 
 #include "stm32f4xx.h"
+#include "helper_functions.h"
 
 #ifndef GUN_FILE
     #define GUN_EXT extern
@@ -16,6 +17,10 @@
 #define FRIC_SET_THRUST_L(x)                    TIM_SetCompare1(TIM1, 1000+(x))
 #define FRIC_SET_THRUST_R(x)                    TIM_SetCompare2(TIM1, 1000+(x))
 
+extern int32_t gunSpeed;	
+extern int32_t error;		
+extern int32_t spSp;
+extern int32_t Cerror;
 typedef struct {
     int32_t pokeTargetSpeed;
     int32_t pokeTargetAngle;

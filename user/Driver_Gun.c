@@ -3,11 +3,34 @@
 #include "Dbus.h"
 #include "Driver_Encoder.h"
 #include "Driver_Gun.h"
-
+#include "canBusProcess.h"
+#include "PID.h"
 #include <string.h>
-
+#include <stdbool.h>
 static PID_Controller PokeSpeedController;
 static PID_Controller PokeAngleController;
+static struct fpid_control_states gunPositionState = {0,0,0};
+float gunpos_kp = 0.3;
+float gunpos_ki = 0;
+float gunpos_kd = 0;
+int32_t gunSpeedKp = 80, gunSpeedKi = 4, gunSpeedKd = 1;
+int32_t gunSpeedSetpoint=0;
+float gunPositionSetpoint=0;
+int32_t targetAngleBuffer=0;
+float curr_angle=0;
+static struct pid_control_states gunSpeedMoveState={0,0,0};// gimbalSpeedStaticState;
+int32_t gunSpeedMoveOutput = 0;
+int32_t gunSpeed=0;
+bool dir=true;
+int32_t curr_speed=0;
+int32_t current_cummulated=0;
+void dir_switch(bool* b){
+	if(*b) *b=false;
+	else *b=true;
+}
+
+
+
 
 void GUN_BSP_Init(void) {
     RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);
@@ -110,6 +133,10 @@ void GUN_Init(void) {
     PokeAngleController.MAX_PIDout = 80;
     PokeAngleController.MIN_PIDout = 0;
     PokeAngleController.mode = kPositional;
+		
+		//incPIDset(&gunSpeedMoveState, 50,3.7,1);
+		
+		
 }
 
 extern volatile u32 ticks_msimg;
@@ -149,49 +176,83 @@ void GUN_SetMotion(void) {
 }
 
 void GUN_ShootOne(void) {
-#if ENCODER_DIR == 1
-    GUN_Data.pokeTargetAngle += 660;
-#else
-    GUN_Data.pokeTargetAngle -= 660;
-#endif
+	
+	
+	if(dir)
+    GUN_Data.pokeTargetAngle += 1368;
+	else 
+		GUN_Data.pokeTargetAngle -= 1368;
+	if(GMballfeedEncoder.ecd_angle>16777151){
+		GMballfeedEncoder.ecd_angle=GUN_Data.pokeTargetAngle=0;
+	}
+	else if(GMballfeedEncoder.ecd_angle<-16777151){
+		GMballfeedEncoder.ecd_angle=GUN_Data.pokeTargetAngle=0;
+	}
+	//gunSpeedMoveState.cummulated_error=0;
+	current_cummulated=0;
 }
 
 void GUN_PokeControl(void) {
-    GUN_Data.pokeTargetSpeed = PID_Update(&PokeAngleController,
-        GUN_Data.pokeTargetAngle, GUN_Data.pokeAngle);
-    GUN_PokeSpeedControl();
+			GUN_SetMotion();
+			GUN_PokeSpeedControl();
+			
 }
 
 void GUN_PokeSpeedControl(void) {
-    ENCODER_Update();
-    GUN_Data.pokeAngle += ENCODER_Data;
-    if (GUN_Data.pokeAngle > 16777216) {
-        GUN_Data.pokeAngle = GUN_Data.pokeTargetAngle = 0;
-    }
-    GUN_Data.pokeOutput = PID_Update(&PokeSpeedController,
-        GUN_Data.pokeTargetSpeed, ENCODER_Data);
-
-#if POKE_DIR == 0
-    if (GUN_Data.pokeOutput >= 0) {
-        GPIO_SetBits(POKE_DIR_PORT, POKE_DIR_PIN);
-        POKE_SET_PWM(GUN_Data.pokeOutput);
-    }
-    else {
-        GPIO_ResetBits(POKE_DIR_PORT, POKE_DIR_PIN);
-        POKE_SET_PWM(-GUN_Data.pokeOutput);
-    }
-#else
-    if (GUN_Data.pokeOutput >= 0) {
-        GPIO_ResetBits(POKE_DIR_PORT, POKE_DIR_PIN);
-        POKE_SET_PWM(GUN_Data.pokeOutput);
-    }
-    else {
-        GPIO_SetBits(POKE_DIR_PORT, POKE_DIR_PIN);
-        POKE_SET_PWM(-GUN_Data.pokeOutput);
-    }
-#endif
-}
-
+		current_cummulated *= 0.92;
+		if(abs(gunSpeed)>4000)
+			current_cummulated+=gunSpeed;
+			
+    if((int32_t)current_cummulated>200000) {
+		
+			gunPositionState.cummulated_error = 0;
+			//gunPositionState.current_error = 0;
+			//gunPositionState.last_error = 0;
+		
+			current_cummulated=0;
+			gunSpeedMoveState.cummulated_error = 0;
+			if(dir){
+			targetAngleBuffer=GUN_Data.pokeTargetAngle;
+			GUN_Data.pokeTargetAngle -= 1368;
+			dir_switch(&dir);
+			}
+		}else if((int32_t)current_cummulated<-200000){
+			gunPositionState.cummulated_error = 0;
+			current_cummulated=0;
+			gunSpeedMoveState.cummulated_error = 0;
+			if(!dir){
+			targetAngleBuffer=GUN_Data.pokeTargetAngle;
+			GUN_Data.pokeTargetAngle += 1368;
+			dir_switch(&dir);
+			}
+		}
+		/*
+		if(dir && targetAngleBuffer<GUN_Data.pokeTargetAngle){
+			targetAngleBuffer+=30;
+		}
+		else if( !dir && targetAngleBuffer>GUN_Data.pokeTargetAngle){
+			targetAngleBuffer-=30;
+		}
+		*/
+		curr_angle=GMballfeedEncoder.ecd_angle;
+		gunPositionSetpoint=GUN_Data.pokeTargetAngle;
+		
+		gunSpeedSetpoint = (int32_t)fpid_process(&gunPositionState,&gunPositionSetpoint, &curr_angle,gunpos_kp,gunpos_ki,gunpos_kd );
+		gunPositionState.cummulated_error = 0;
+		//gunSpeedSetpoint=300;
+		//Limit the output
+		if (gunSpeedSetpoint > 300) gunSpeedSetpoint = 300;
+		else if (gunSpeedSetpoint < -300) gunSpeedSetpoint = -300;
+		curr_speed=GMballfeedEncoder.filter_rate;
+		spSp = current_cummulated;
+		
+		Cerror = targetAngleBuffer;
+		pidLimitI(&gunSpeedMoveState,200000);
+		gunSpeed=pid_process(&gunSpeedMoveState,&gunSpeedSetpoint,&curr_speed,gunSpeedKp,gunSpeedKi,gunSpeedKd);
+	
+		error=(int32_t)gunPositionState.cummulated_error;
+		}
+/*
 void GUN_SetFree(void) {
     PID_Reset(&PokeSpeedController);
     PID_Reset(&PokeAngleController);
@@ -202,20 +263,22 @@ void GUN_SetFree(void) {
 }
 
 #include <string.h>
-
+*/
 /*
     Trim val to [-lim, lim]
 */
+/*
 static float PID_Trim(float val, float lim) {
     if (lim < 0.0f) return val;
     if (val < -lim) val = -lim;
     if (val > lim) val = lim;
     return val;
 }
-
+*/
 /*
     Restore to initial state
 */
+
 void PID_Reset(PID_Controller *pid) {
     memset(pid->set, 0, sizeof(pid->set));
     memset(pid->real, 0, sizeof(pid->real));
@@ -224,9 +287,11 @@ void PID_Reset(PID_Controller *pid) {
     pid->output = 0.0f;
 }
 
+
 /*
     Update PID controller and return output
 */
+/*
 float PID_Update(PID_Controller *pid, float target, float measure) {
     // update error
     pid->set[kNOW] = target;
@@ -281,4 +346,4 @@ float PID_Update(PID_Controller *pid, float target, float measure) {
     if (abs_ret < pid->MIN_PIDout) ret = 0.0f;
     return ret;
 }
-
+*/

@@ -39,6 +39,7 @@ extern volatile Encoder CM3Encoder;
 extern volatile Encoder CM4Encoder;
 extern volatile Encoder GMYawEncoder;
 extern volatile Encoder GMPitchEncoder;
+extern volatile Encoder GMballfeedEncoder;
 
 extern volatile Encoder GMxEncoder;
 
