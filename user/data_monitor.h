@@ -6,6 +6,6 @@
 // only for uart3 Tx
 void DataMonitor_Init(void);
 
-u8 DataMonitor_Send(u8 *buffer, u32 length);
+u8 DataMonitor_Send(uint8_t id, int16_t);
 
 #endif // DATA_MONITOR_H
