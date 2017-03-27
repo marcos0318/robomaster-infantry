@@ -211,8 +211,10 @@ int main(void)
 				forward_speed = (DBUS_ReceiveData.rc.ch1 + DBUS_CheckPush(KEY_W)*660 - DBUS_CheckPush(KEY_S)*660) * speed_multiplier/speed_limitor ;
 				right_speed =   (DBUS_ReceiveData.rc.ch0 + DBUS_CheckPush(KEY_D)*660 - DBUS_CheckPush(KEY_A)*660) * speed_multiplier/speed_limitor ;
 
+
+				//direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*4 ;
 				if(DBUS_ReceiveData.rc.switch_left == 1) {		//auto follow mode
-					direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*4 ;
+					direction += (-DBUS_ReceiveData.rc.ch2/300 + -DBUS_ReceiveData.mouse.x);
 					setpoint_angle = -direction * 3600/upperTotal;
 					gimbalPositionSetpoint = direction + output_angle*upperTotal/3600;
 					if (gimbalPositionSetpoint > 1500) gimbalPositionSetpoint = 1500;
@@ -220,7 +222,22 @@ int main(void)
 				}
 				if(DBUS_ReceiveData.rc.switch_left == 3)		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
 				{
-					direction = -DBUS_ReceiveData.rc.ch2*2 + -DBUS_ReceiveData.mouse.xtotal*4 ;
+
+					//direction not move when the difference is large
+					if (abs(direction + output_angle*upperTotal/3600) <= outsideLimit) 
+						direction += (-DBUS_ReceiveData.rc.ch2/300 + -DBUS_ReceiveData.mouse.x);
+					else if ((direction + output_angle*upperTotal/3600)>outsideLimit)
+						direction = outsideLimit  -output_angle*upperTotal/3600;			
+					else if ((direction + output_angle*upperTotal/3600)<-outsideLimit)
+						direction = -outsideLimit -output_angle*upperTotal/3600;
+
+					gimbalPositionSetpoint = direction +  output_angle*upperTotal/3600;
+
+					if(DBUS_ReceiveData.mouse.press_right) {
+						setpoint_angle = -direction * 3600/upperTotal;
+					}
+
+					/*
 					if(DBUS_ReceiveData.mouse.xtotal*yawPosMultiplier>=outsideLimit){
 						gimbalPositionSetpoint=-outsideLimit;
 						
@@ -231,7 +248,12 @@ int main(void)
 						
 						setpoint_angle+=(DBUS_ReceiveData.mouse.x)/14;
 						DBUS_ReceiveData.mouse.xtotal=-outsideLimit/yawPosMultiplier	;
-					}// else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal*yawPosMultiplier;
+					}
+					*/
+					//Used for protection				
+					if (gimbalPositionSetpoint > 2000) gimbalPositionSetpoint = 2000;
+					if (gimbalPositionSetpoint < -2000) gimbalPositionSetpoint = -2000;
+					// else gimbalPositionSetpoint=-DBUS_ReceiveData.mouse.xtotal*yawPosMultiplier;
 					
 					/*
 					if(DBUS_ReceiveData.mouse.press_right && Fprev){
