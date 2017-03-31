@@ -150,7 +150,7 @@ bool Fprev=false;
 //The direction is from 0 to 8192
 //The gyro of chasis is ranged from 0 to 3600, so we need converstion
 int32_t direction = 0;
-int32_t upperTotal = 4500;
+int32_t upperTotal = 360*27;
 
 //The rune mode
 int32_t isRuneMode = 0;
@@ -169,7 +169,8 @@ int32_t spSp = 0;
 int32_t Cerror = 0;
 
 
-
+int32_t xtotal = 0;
+int32_t pre_xtotal = 0;
 
 int main(void)
 {	
@@ -222,10 +223,10 @@ int main(void)
 				}
 				if(DBUS_ReceiveData.rc.switch_left == 3)		//keyboard-mouse mode, chasis will turn if mouse go beyong the boundary
 				{
-
-					//direction not move when the difference is large
+					xtotal =  DBUS_ReceiveData.mouse.xtotal;
+ 					//direction not move when the difference is large
 					if (abs(direction + output_angle*upperTotal/3600) <= outsideLimit) 
-						direction += (-DBUS_ReceiveData.rc.ch2/300 + -DBUS_ReceiveData.mouse.x);
+						direction += (-DBUS_ReceiveData.rc.ch2/300 + -(xtotal-pre_xtotal)*4);
 					else if ((direction + output_angle*upperTotal/3600)>outsideLimit)
 						direction = outsideLimit  -output_angle*upperTotal/3600;			
 					else if ((direction + output_angle*upperTotal/3600)<-outsideLimit)
@@ -272,6 +273,7 @@ int main(void)
 					Fprev=DBUS_ReceiveData.mouse.press_right;
 					//mouse_prev=DBUS_ReceiveData.mouse.xtotal;
 					*/
+					pre_xtotal = xtotal;
 				}
 //********************************************************************************************************************
 
@@ -379,15 +381,15 @@ int main(void)
 //Yaw and Pitch speed control 				
 				
 				gimbalPositionFeedback = GMYawEncoder.ecd_angle;
-				gimbalSpeedSetpoint = (int32_t)fpid_process(&gimbalPositionState, &gimbalPositionSetpoint, &gimbalPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
+				gimbalSpeedSetpoint = (int32_t)fpid_process(&gimbalPositionState, &bufferedGimbalPositionSetpoint, &gimbalPositionFeedback,gpos_kp,gpos_ki,gpos_kd );
 
 				pitchPositionFeedback = GMPitchEncoder.ecd_angle;
 				pitchSpeedSetpoint = (int32_t)fpid_process(&pitchPositionState, &pitchPositionSetpoint, &pitchPositionFeedback,ppos_kp,ppos_ki,ppos_kd );
 
 
 				//Limit the output
-				if (gimbalSpeedSetpoint > 200) gimbalSpeedSetpoint = 200;
-				else if (gimbalSpeedSetpoint < -200) gimbalSpeedSetpoint = -200;
+				if (gimbalSpeedSetpoint > 80) gimbalSpeedSetpoint = 80;
+				else if (gimbalSpeedSetpoint < -80) gimbalSpeedSetpoint = -80;
 				
 				if (pitchSpeedSetpoint > 80) pitchSpeedSetpoint = 80;
 				else if (pitchSpeedSetpoint < -80) pitchSpeedSetpoint = -80;
@@ -456,6 +458,7 @@ int main(void)
 					for(uint8_t i=0;i<4;i++){
 						tft_prints(1,i+2,"LMP %d %d",i,LiftingMotorSetpoint[i]);
 					}
+					tft_prints(1,7,"gero:%d", output_angle);
 					tft_update();
 					
 				}
@@ -472,7 +475,6 @@ int main(void)
 				Set_CM_Speed(CAN2, 0, 0, 0, 0);
 			}		
 			
-				
 			
 			/*
 			//all the tft_prints things				
