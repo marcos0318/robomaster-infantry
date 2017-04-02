@@ -36,13 +36,13 @@ void init(){
 
 int16_t checkSetpoint(int16_t a, bool dir){
 	if(dir){
-		if(a>LiftingMotorSetpointLimit-10)
+		if(a>LiftingMotorSetpointLimit-200)
 			a=LiftingMotorSetpointLimit-1;
-		else{a+=10;}
+		else{a+=200;}
 	}		else{
-		if(a<(-LiftingMotorSetpointLimit+10)){
+		if(a<(-LiftingMotorSetpointLimit+200)){
 			a=-LiftingMotorSetpointLimit;
-		} else {a-=10;}
+		} else {a-=200;}
 	}
 	return a;
 }
@@ -449,21 +449,24 @@ int main(void)
 					if(DBUS_CheckPush(KEY_X)){
 						LiftingMotorSetpoint[0]=LiftingMotorSetpoint[1]=checkSetpoint(LiftingMotorSetpoint[0],false);
 					}
-					if(DBUS_CheckPush(KEY_Z)){
+					if(DBUS_CheckPush(KEY_C)){
 						LiftingMotorSetpoint[2]=LiftingMotorSetpoint[3]=checkSetpoint(LiftingMotorSetpoint[2],true);
 					}
-					if(DBUS_CheckPush(KEY_Z)){
+					if(DBUS_CheckPush(KEY_V)){
 						LiftingMotorSetpoint[2]=LiftingMotorSetpoint[3]=checkSetpoint(LiftingMotorSetpoint[3],false);
 					}
 					for(uint8_t i=0;i<4;i++){
 						tft_prints(1,i+2,"LMP %d %d",i,LiftingMotorSetpoint[i]);
 					}
 					tft_prints(1,7,"gero:%d", output_angle);
+					
+					
+					
 					tft_update();
 					
 				}
-				for(uint8_t i;i<4;i++){
-					if(ticks_msimg%4==i){
+				for(uint8_t i=0;i<4;i++){
+					if(ticks_msimg%80 ==(i*20)){
 						DataMonitor_Send(i,LiftingMotorSetpoint[i]);
 					}
 				}
@@ -475,7 +478,11 @@ int main(void)
 				Set_CM_Speed(CAN2, 0, 0, 0, 0);
 			}		
 			
-			
+			if ( ticks_msimg % 20 == 0 ){
+				tft_prints(1,9,"mode:%d", DBUS_ReceiveData.rc.switch_left );
+				tft_update();
+				
+			}
 			/*
 			//all the tft_prints things				
 			if(ticks_msimg%50==0)
